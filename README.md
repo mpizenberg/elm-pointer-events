@@ -27,6 +27,25 @@ for compatibility with all major browsers.
 ## Usage
 
 
+## Example
+
+An example is available in the `examples/` directory.
+To test it, compile the elm file with the command:
+
+```shell
+elm-make PointerEvents.elm --output PointerEvents.js
+```
+
+Then use any static http server like:
+
+```shell
+python3 -m http.server 8888
+```
+
+And open your browser at localhost:8888
+to load the `index.html` page.
+
+
 ## Want to contribute?
 
 If you are interested in contributing in any way
