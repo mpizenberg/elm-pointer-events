@@ -9,7 +9,7 @@ if (! ("PointerEvent" in window) ) {
 			elmPepTarget = findElmPEP( mouseEvent.target )
 			if ( elmPepTarget !== null ) {
 				let pointerEvent = new MouseEvent( pointerType, mouseEvent )
-				pointerEvent.pointerId = 0
+				pointerEvent.pointerId = 1
 				pointerEvent.isPrimary = true
 				elmPepTarget.dispatchEvent( pointerEvent )
 			}
@@ -45,7 +45,7 @@ if (! ("PointerEvent" in window) ) {
 					mouseEvent.offsetY = touch.clientY - rect.top
 
 					let pointerEvent = new MouseEvent( pointerType, mouseEvent )
-					pointerEvent.pointerId = touch.identifier
+					pointerEvent.pointerId = 1 + touch.identifier
 					pointerEvent.isPrimary = (touch.identifier == 0)
 					elmPepTarget.dispatchEvent( pointerEvent )
 				}
