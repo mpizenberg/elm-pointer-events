@@ -44,15 +44,15 @@ to disable browsers scroll behaviors.
 
 ```elm
 div
-	[ Pointer.onDown ...
-	, Pointer.onMove ...
-	, Pointer.onUp ...
-	-- no touch-action
-	, Html.Attributes.style [ ( "touch-action", "none" ) ]
-	-- Add this to your list of attribute messages
-	, Html.Attributes.attribute "elm-pep" "true"
-	]
-	[]
+    [ Pointer.onDown ...
+    , Pointer.onMove ...
+    , Pointer.onUp ...
+    -- no touch-action
+    , Html.Attributes.style [ ( "touch-action", "none" ) ]
+    -- Add this to your list of attribute messages
+    , Html.Attributes.attribute "elm-pep" "true"
+    ]
+    []
 ```
 
 
