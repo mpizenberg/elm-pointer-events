@@ -65,8 +65,8 @@ pointerEvents =
     -- no touch-action
     , HtmlA.style [ ( "touch-action", "none" ) ]
 
-    -- PEP (polyfill) compatibility
-    , HtmlA.attribute "touch-action" "none"
+    -- elm PEP (polyfill) compatibility
+    , HtmlA.attribute "elm-pep" "true"
     ]
 
 
