@@ -16,15 +16,44 @@ Since maintaining both mouse and touch events for compatibility
 is really cumbersome, using a unified pointer events interface
 is a relief.
 However this API [is not well supported by all browsers][caniuse-pointer].
-So I strongly recommend to use it in pair with a [polyfill][poly-pointer]
+So I strongly recommend to use it in pair with a the [elm-pep polyfill][elm-pep]
 for compatibility with all major browsers.
 
 [pointer-events]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 [caniuse-pointer]: https://caniuse.com/#feat=pointer
-[poly-pointer]: https://github.com/jquery/PEP
+[elm-pep]: https://github.com/mpizenberg/elm-pep
 
 
 ## Usage
+
+The following functions can easilly be used
+to generate attribute messages:
+
+```elm
+Pointer.onDown : (Pointer.Event -> msg) -> Html.Attribute msg
+Pointer.onMove : (Pointer.Event -> msg) -> Html.Attribute msg
+Pointer.onUp : (Pointer.Event -> msg) -> Html.Attribute msg
+```
+
+If you are using the [elm-pep][elm-pep] polyfill
+for compatibility with Firefox and Safari,
+you have to add the `elm-pep` attribute.
+It is also recommended that you deactivate `touch-action`
+to disable browsers scroll behaviors.
+
+
+```elm
+div
+	[ Pointer.onDown ...
+	, Pointer.onMove ...
+	, Pointer.onUp ...
+	-- no touch-action
+	, Html.Attributes.style [ ( "touch-action", "none" ) ]
+	-- Add this to your list of attribute messages
+	, Html.Attributes.attribute "elm-pep" "true"
+	]
+	[]
+```
 
 
 ## Example
@@ -68,4 +97,4 @@ You can obtain one at https://mozilla.org/MPL/2.0/.
 
 ## Authors
 
-Original author: Matthieu Pizenberg (matthieu.pizenberg@gmail.com)
+Matthieu Pizenberg: matthieu.pizenberg@gmail.com

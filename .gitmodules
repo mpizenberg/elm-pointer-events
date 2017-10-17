@@ -1,0 +1,3 @@
+[submodule "elm-pep"]
+	path = elm-pep
+	url = https://github.com/mpizenberg/elm-pep.git
