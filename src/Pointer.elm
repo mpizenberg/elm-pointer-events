@@ -10,11 +10,15 @@ module Pointer
 
 {-| Handling pointer events.
 
-@docs Event
 
-@docs onDown, onMove, onUp, onWithOptions
+# Simple default usage
 
-@docs eventDecoder
+@docs Event, onDown, onMove, onUp
+
+
+# Advanced personalized usage
+
+@docs onWithOptions, eventDecoder
 
 -}
 
@@ -181,14 +185,20 @@ attribute of the pointer event, you could extend the present decoder like:
         , pressure : Float
         }
 
-    type Msg
-        = PressureMsg Float
-
     myEventDecoder : Decoder MyPointerEvent
     myEventDecoder =
         Decode.map2 MyPointerEvent
             Pointer.eventDecoder
             (Decode.field "pressure" Decode.float)
+
+And use it like as follows:
+
+    type Msg
+        = PressureMsg Float
+
+    div
+        [ myOnDown (.pressure >> PressureMsg) ]
+        [ text "click here to measure pressure" ]
 
     myOnDown : (MyPointerEvent -> msg) -> Html.Attribute msg
     myOnDown tag =
@@ -200,12 +210,6 @@ attribute of the pointer event, you could extend the present decoder like:
         { stopPropagation = True
         , preventDefault = True
         }
-
-And use `myOnDown` like `Pointer.onDown`:
-
-    div
-        [ myOnDown (.pressure >> PressureMsg) ]
-        [ text "click here to measure pressure" ]
 
 BEWARE that the minimalist [elm-pep] polyfill may not support
 this property. So if you rely on it for compatibility with browsers

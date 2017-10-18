@@ -1,5 +1,5 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.3",
     "summary": "Pointer events",
     "repository": "https://github.com/mpizenberg/elm-pointer-events.git",
     "license": "MPL-2.0",
