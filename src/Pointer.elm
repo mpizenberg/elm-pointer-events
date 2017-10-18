@@ -39,14 +39,14 @@ the `pointer` attribute here is of type [`Mouse.Event`][Mouse-Event].
 So to get the relative (offset) position of a pointer event for example:
 
     relativePos : Pointer.Event -> ( Float, Float )
-    relativePos =
-        .pointer >> .offsetPos
+    relativePos event =
+        event.pointer.offsetPos
 
 And to know if the shift key was pressed:
 
-    shiftKeyPressed : Pointer.Event -> Bool
-    shiftKeyPressed =
-        .pointer >> .key >> .shift
+    isShiftKeyPressed : Pointer.Event -> Bool
+    isShiftKeyPressed event =
+        event.pointer.key.shift
 
 [PointerEvent]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 [MouseEvent]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
@@ -140,7 +140,7 @@ If for some reason the default behavior of this lib
 (stop propagation and prevent default) does not fit your needs,
 you can change it with for example:
 
-    myOnDown : (Event -> msg) -> Html.Attribute msg
+    myOnDown : (Pointer.Event -> msg) -> Html.Attribute msg
     myOnDown =
         { stopPropagation = False, preventDefault = True }
             |> Pointer.onWithOptions "pointerdown"
@@ -148,10 +148,15 @@ you can change it with for example:
 You can also use `Pointer.onWithOptions` to listen to an event not
 already covered by the functions in this package, like `pointercancel`:
 
-    onCancel : (Event -> msg) -> Html.Attribute msg
+    onCancel : (Pointer.Event -> msg) -> Html.Attribute msg
     onCancel =
         { stopPropagation = True, preventDefault = True }
             |> Pointer.onWithOptions "pointercancel"
+
+BEWARE that the minimalist [elm-pep] polyfill may not support
+this event. So if you rely on it for compatibility with browsers
+not supporting pointer events, such event may never get triggered.
+If such a need arises, please open an issue in [elm-pep].
 
 [html-options]: http://package.elm-lang.org/packages/elm-lang/html/2.0.0/Html-Events#Options
 
