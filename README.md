@@ -16,7 +16,7 @@ Since maintaining both mouse and touch events for compatibility
 is really cumbersome, using a unified pointer events interface
 is a relief.
 However this API [is not well supported by all browsers][caniuse-pointer].
-So I strongly recommend to use it in pair with a the [elm-pep polyfill][elm-pep]
+So I strongly recommend to use it in pair with the [elm-pep polyfill][elm-pep]
 for compatibility with all major browsers.
 
 [pointer-events]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
