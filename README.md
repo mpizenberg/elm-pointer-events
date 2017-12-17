@@ -8,17 +8,44 @@
 [badge-license]: https://img.shields.io/badge/license-MPL--2.0-blue.svg?style=flat-square
 [license]: https://www.mozilla.org/en-US/MPL/2.0/
 
-This package aims at handling [pointer events][pointer-events] in elm.
+> Warning: merge in progress (issue #1).
+>
+> The goal being to merge all my pointer-related packages here for elm 0.19, namely:
+>
+> * [elm-mouse-events]
+> * [elm-touch-events]
+> * [elm-pointer-events]
+>
+> Remark: other improvements might also happen before next major version (see issue #2)
+
+[elm-mouse-events]: https://github.com/mpizenberg/elm-mouse-events
+[elm-touch-events]: https://github.com/mpizenberg/elm-touch-events
+[elm-pointer-events]: https://github.com/mpizenberg/elm-pointer-events
+
+This package aims at handling all kinds of pointer events in elm.
+To be more specific, this means:
+
+* [`MouseEvent`][mouse-events]: standard mouse events
+* [`TouchEvent`][touch-events]: standard touch events
+* [`PointerEvent`][pointer-events]: new pointer events
+
+If you are looking for only one standard kind of interaction (mouse or touch),
+I recommend that you use the `Mouse` or `Touch`/`SingleTouch`/`MultiTouch` modules.
+If however, you are designing a multi-device (desktop/tablet/mobile/...) experience,
+I recommend that you use the `Pointer` module.
+
 Pointer events are a unified interface for similar input devices
 (mouse, pen, touch, ...).
-
 Since maintaining both mouse and touch events for compatibility
 is really cumbersome, using a unified pointer events interface
 is a relief.
-However this API [is not well supported by all browsers][caniuse-pointer].
+
+Beware though, that the pointer API [is not well supported by all browsers][caniuse-pointer].
 So I strongly recommend to use it in pair with the [elm-pep polyfill][elm-pep]
 for compatibility with major browsers.
 
+[mouse-events]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
+[touch-events]: https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
 [pointer-events]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 [caniuse-pointer]: https://caniuse.com/#feat=pointer
 [elm-pep]: https://github.com/mpizenberg/elm-pep
@@ -26,35 +53,77 @@ for compatibility with major browsers.
 
 ## Usage
 
-The following functions can easilly be used
-to generate attribute messages:
+### Mouse and Pointer
+
+The `Mouse` and `Pointer` modules have very similar API
+so I will use `Mouse` as an example.
+Let's say you want the coordinates of a mouse down event relative to the DOM
+element that triggered it.
+In JavaScript, these are provided by the [`offsetX` and `offsetY` properties][offsetX]
+of the mouse event.
+Using this module, these are similarly provided by the `offsetPos` attribute
+of a mouse `Event`:
+
 
 ```elm
-Pointer.onDown : (Pointer.Event -> msg) -> Html.Attribute msg
-Pointer.onMove : (Pointer.Event -> msg) -> Html.Attribute msg
-Pointer.onUp : (Pointer.Event -> msg) -> Html.Attribute msg
+import Mouse
+
+-- ...
+
+type Msg
+    = MouseDownAt ( Float, Float )
+
+view =
+    div
+        [Mouse.onDown (\event -> MouseDownAt event.offsetPos)]
+        [text "click here"]
 ```
 
-It is recommended that you deactivate `touch-action`
+If you are using the `Pointer` module,
+it is recommended that you deactivate `touch-action`
 to disable browsers scroll/pinch/... touch behaviors.
 
 
 ```elm
 div
-    [ Pointer.onDown ...
-    , Pointer.onMove ...
-    , Pointer.onUp ...
+    [ Pointer.onMove ...
     -- no touch-action
     , Html.Attributes.style [ ( "touch-action", "none" ) ]
     ]
     []
 ```
 
+[offsetX]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/offsetX
 
-## Example
+### Touch
 
-An example is available in the `examples/` directory.
-To test it, compile the elm file with the command:
+Touch interactions can be managed using the `Touch`, `SingleTouch` and `MultiTouch` modules.
+The `Touch` module, regroups data structures common to both single- and multi-touch interactions.
+In case of simple, single touch interactions, one might use the `SingleTouch` module like below:
+
+```elm
+import SingleTouch
+import Touch
+
+-- ...
+
+type Msg
+    = TouchStartAt ( Float, Float )
+
+view =
+    div
+        [SingleTouch.onStart (\coord -> TouchStartAt (Touch.clientPos coord))]
+        [text "touch here"]
+```
+
+In order to have a finer grained control of the touch event,
+consider using the `MultiTouch` module.
+
+
+## Examples
+
+Working examples are available in the `examples/` directory.
+To test one example, `cd` into one of them and compile the elm file with the command:
 
 ```shell
 elm-make Main.elm --output Main.js
@@ -63,7 +132,7 @@ elm-make Main.elm --output Main.js
 Then use any static http server like:
 
 ```shell
-python3 -m http.server 8888
+$ python3 -m http.server 8888
 ```
 
 And open your browser at localhost:8888
