@@ -17,7 +17,7 @@ is really cumbersome, using a unified pointer events interface
 is a relief.
 However this API [is not well supported by all browsers][caniuse-pointer].
 So I strongly recommend to use it in pair with the [elm-pep polyfill][elm-pep]
-for compatibility with all major browsers.
+for compatibility with major browsers.
 
 [pointer-events]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 [caniuse-pointer]: https://caniuse.com/#feat=pointer
@@ -35,11 +35,8 @@ Pointer.onMove : (Pointer.Event -> msg) -> Html.Attribute msg
 Pointer.onUp : (Pointer.Event -> msg) -> Html.Attribute msg
 ```
 
-If you are using the [elm-pep][elm-pep] polyfill
-for compatibility with Firefox and Safari,
-you have to add the `elm-pep` attribute.
-It is also recommended that you deactivate `touch-action`
-to disable browsers scroll behaviors.
+It is recommended that you deactivate `touch-action`
+to disable browsers scroll/pinch/... touch behaviors.
 
 
 ```elm
@@ -49,8 +46,6 @@ div
     , Pointer.onUp ...
     -- no touch-action
     , Html.Attributes.style [ ( "touch-action", "none" ) ]
-    -- Add this to your list of attribute messages
-    , Html.Attributes.attribute "elm-pep" "true"
     ]
     []
 ```
@@ -62,7 +57,7 @@ An example is available in the `examples/` directory.
 To test it, compile the elm file with the command:
 
 ```shell
-elm-make PointerEvents.elm --output PointerEvents.js
+elm-make Main.elm --output Main.js
 ```
 
 Then use any static http server like:
@@ -95,6 +90,6 @@ If a copy of the MPL was not distributed with this file,
 You can obtain one at https://mozilla.org/MPL/2.0/.
 
 
-## Authors
+## Contributors
 
-Matthieu Pizenberg: matthieu.pizenberg@gmail.com
+Matthieu Pizenberg - @mpizenberg
