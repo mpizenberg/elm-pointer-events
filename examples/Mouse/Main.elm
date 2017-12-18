@@ -18,13 +18,23 @@ type MouseEvent
     | Down Mouse.Event
     | Move Mouse.Event
     | Up Mouse.Event
+    | Click Mouse.Event
+    | DoubleClick Mouse.Event
+    | Over Mouse.Event
+    | Out Mouse.Event
 
 
 view : MouseEvent -> Html MouseEvent
 view event =
-    div
-        [ Mouse.onDown Down
-        , Mouse.onMove Move
-        , Mouse.onUp Up
+    div []
+        [ p
+            [ Mouse.onDown Down
+            , Mouse.onMove Move
+            , Mouse.onUp Up
+            , Mouse.onClick Click
+            , Mouse.onDoubleClick DoubleClick
+            , Mouse.onOver Over
+            , Mouse.onOut Out
+            ]
+            [ text <| toString event ]
         ]
-        [ text <| toString event ]
