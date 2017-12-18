@@ -4,8 +4,14 @@ module Mouse
         , Event
         , Keys
         , eventDecoder
+        , onClick
+        , onDoubleClick
         , onDown
+        , onEnter
+        , onLeave
         , onMove
+        , onOut
+        , onOver
         , onUp
         , onWithOptions
         )
@@ -15,6 +21,10 @@ module Mouse
 @docs Event, Keys, Coordinates
 
 @docs onDown, onMove, onUp, onWithOptions
+
+@docs onClick, onDoubleClick
+
+@docs onEnter, onOver, onLeave, onOut
 
 @docs eventDecoder
 
@@ -72,6 +82,48 @@ onMove =
 onUp : (Event -> msg) -> Attribute msg
 onUp =
     onWithOptions "mouseup" stopOptions
+
+
+{-| Listen to `click` events.
+-}
+onClick : (Event -> msg) -> Attribute msg
+onClick =
+    onWithOptions "click" stopOptions
+
+
+{-| Listen to `dblclick` events.
+-}
+onDoubleClick : (Event -> msg) -> Attribute msg
+onDoubleClick =
+    onWithOptions "dblclick" stopOptions
+
+
+{-| Listen to `mouseenter` events.
+-}
+onEnter : (Event -> msg) -> Attribute msg
+onEnter =
+    onWithOptions "mouseenter" stopOptions
+
+
+{-| Listen to `mouseover` events.
+-}
+onOver : (Event -> msg) -> Attribute msg
+onOver =
+    onWithOptions "mouseover" stopOptions
+
+
+{-| Listen to `mouseleave` events.
+-}
+onLeave : (Event -> msg) -> Attribute msg
+onLeave =
+    onWithOptions "mouseleave" stopOptions
+
+
+{-| Listen to `mouseout` events.
+-}
+onOut : (Event -> msg) -> Attribute msg
+onOut =
+    onWithOptions "mouseout" stopOptions
 
 
 {-| Choose the mouse event to listen to, and specify the event options.
