@@ -39,6 +39,18 @@ import Json.Decode as Decode exposing (Decoder)
 
 
 {-| Type that get returned by a mouse event.
+
+TODO: add other mouse properties
+
+  - button
+  - buttons (not compatible mac / safari)
+  - metaKey
+  - movementX / movementY (not compatible safari)
+  - pageX / pageY (no Double in Firefox?)
+  - region (not compatible)
+  - screenX / screenY
+  - x / y (is it useful?)
+
 -}
 type alias Event =
     { key : Keys
