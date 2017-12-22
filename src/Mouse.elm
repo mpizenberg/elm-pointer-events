@@ -54,6 +54,7 @@ TODO: add other mouse properties
 -}
 type alias Event =
     { key : Keys
+    , button : Button
     , clientPos : Coordinates
     , offsetPos : Coordinates
     }
@@ -63,6 +64,19 @@ type alias Event =
 -}
 type alias Keys =
     { alt : Bool, ctrl : Bool, shift : Bool }
+
+
+{-| The button pressed for the event.
+As such, it is not reliable for events such as
+`mouseenter`, `mouseleave`, `mouseover`, `mouseout`, or `mousemove`.
+-}
+type Button
+    = ErrorButton
+    | MainButton
+    | MiddleButton
+    | SecondButton
+    | BackButton
+    | ForwardButton
 
 
 {-| Coordinates of a mouse event.
@@ -161,8 +175,9 @@ stopOptions =
 -}
 eventDecoder : Decoder Event
 eventDecoder =
-    Decode.map3 Event
+    Decode.map4 Event
         keyDecoder
+        buttonDecoder
         clientPosDecoder
         offsetPosDecoder
 
@@ -173,6 +188,34 @@ keyDecoder =
         (Decode.field "altKey" Decode.bool)
         (Decode.field "ctrlKey" Decode.bool)
         (Decode.field "shiftKey" Decode.bool)
+
+
+buttonDecoder : Decoder Button
+buttonDecoder =
+    Decode.map buttonFromId
+        (Decode.field "button" Decode.int)
+
+
+buttonFromId : Int -> Button
+buttonFromId id =
+    case id of
+        0 ->
+            MainButton
+
+        1 ->
+            MiddleButton
+
+        2 ->
+            SecondButton
+
+        3 ->
+            BackButton
+
+        4 ->
+            ForwardButton
+
+        _ ->
+            ErrorButton
 
 
 clientPosDecoder : Decoder Coordinates
