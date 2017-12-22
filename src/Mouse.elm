@@ -1,7 +1,6 @@
 module Mouse
     exposing
-        ( Coordinates
-        , Event
+        ( Event
         , Keys
         , eventDecoder
         , onClick
@@ -18,7 +17,7 @@ module Mouse
 
 {-| Handling detailed mouse events.
 
-@docs Event, Keys, Coordinates
+@docs Event, Keys
 
 @docs onDown, onMove, onUp, onWithOptions
 
@@ -52,10 +51,10 @@ TODO: add other mouse properties
 type alias Event =
     { keys : Keys
     , button : Button
-    , clientPos : Coordinates
-    , offsetPos : Coordinates
-    , pagePos : Coordinates
-    , screenPos : Coordinates
+    , clientPos : ( Float, Float )
+    , offsetPos : ( Float, Float )
+    , pagePos : ( Float, Float )
+    , screenPos : ( Float, Float )
     }
 
 
@@ -76,12 +75,6 @@ type Button
     | SecondButton
     | BackButton
     | ForwardButton
-
-
-{-| Coordinates of a mouse event.
--}
-type alias Coordinates =
-    ( Float, Float )
 
 
 
@@ -219,28 +212,28 @@ buttonFromId id =
             ErrorButton
 
 
-clientPosDecoder : Decoder Coordinates
+clientPosDecoder : Decoder ( Float, Float )
 clientPosDecoder =
     Decode.map2 (,)
         (Decode.field "clientX" Decode.float)
         (Decode.field "clientY" Decode.float)
 
 
-offsetPosDecoder : Decoder Coordinates
+offsetPosDecoder : Decoder ( Float, Float )
 offsetPosDecoder =
     Decode.map2 (,)
         (Decode.field "offsetX" Decode.float)
         (Decode.field "offsetY" Decode.float)
 
 
-pagePosDecoder : Decoder Coordinates
+pagePosDecoder : Decoder ( Float, Float )
 pagePosDecoder =
     Decode.map2 (,)
         (Decode.field "pageX" Decode.float)
         (Decode.field "pageY" Decode.float)
 
 
-screenPosDecoder : Decoder Coordinates
+screenPosDecoder : Decoder ( Float, Float )
 screenPosDecoder =
     Decode.map2 (,)
         (Decode.field "screenX" Decode.float)
