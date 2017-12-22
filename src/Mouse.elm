@@ -45,14 +45,13 @@ TODO: add other mouse properties
   - buttons (not compatible mac / safari)
   - metaKey (not compatible linux)
   - movementX / movementY (not compatible safari)
-  - pageX / pageY (no Double in Firefox?)
   - region (not compatible)
   - screenX / screenY
   - x / y (is it useful?)
 
 -}
 type alias Event =
-    { key : Keys
+    { keys : Keys
     , button : Button
     , clientPos : Coordinates
     , offsetPos : Coordinates
@@ -176,15 +175,15 @@ stopOptions =
 eventDecoder : Decoder Event
 eventDecoder =
     Decode.map5 Event
-        keyDecoder
+        keysDecoder
         buttonDecoder
         clientPosDecoder
         offsetPosDecoder
         pagePosDecoder
 
 
-keyDecoder : Decoder Keys
-keyDecoder =
+keysDecoder : Decoder Keys
+keysDecoder =
     Decode.map3 Keys
         (Decode.field "altKey" Decode.bool)
         (Decode.field "ctrlKey" Decode.bool)
