@@ -46,7 +46,6 @@ TODO: add other mouse properties
   - metaKey (not compatible linux)
   - movementX / movementY (not compatible safari)
   - region (not compatible)
-  - screenX / screenY
   - x / y (is it useful?)
 
 -}
@@ -56,6 +55,7 @@ type alias Event =
     , clientPos : Coordinates
     , offsetPos : Coordinates
     , pagePos : Coordinates
+    , screenPos : Coordinates
     }
 
 
@@ -174,12 +174,13 @@ stopOptions =
 -}
 eventDecoder : Decoder Event
 eventDecoder =
-    Decode.map5 Event
+    Decode.map6 Event
         keysDecoder
         buttonDecoder
         clientPosDecoder
         offsetPosDecoder
         pagePosDecoder
+        screenPosDecoder
 
 
 keysDecoder : Decoder Keys
@@ -237,3 +238,10 @@ pagePosDecoder =
     Decode.map2 (,)
         (Decode.field "pageX" Decode.float)
         (Decode.field "pageY" Decode.float)
+
+
+screenPosDecoder : Decoder Coordinates
+screenPosDecoder =
+    Decode.map2 (,)
+        (Decode.field "screenX" Decode.float)
+        (Decode.field "screenY" Decode.float)
