@@ -42,9 +42,8 @@ import Json.Decode as Decode exposing (Decoder)
 
 TODO: add other mouse properties
 
-  - button
   - buttons (not compatible mac / safari)
-  - metaKey
+  - metaKey (not compatible linux)
   - movementX / movementY (not compatible safari)
   - pageX / pageY (no Double in Firefox?)
   - region (not compatible)
@@ -57,6 +56,7 @@ type alias Event =
     , button : Button
     , clientPos : Coordinates
     , offsetPos : Coordinates
+    , pagePos : Coordinates
     }
 
 
@@ -175,11 +175,12 @@ stopOptions =
 -}
 eventDecoder : Decoder Event
 eventDecoder =
-    Decode.map4 Event
+    Decode.map5 Event
         keyDecoder
         buttonDecoder
         clientPosDecoder
         offsetPosDecoder
+        pagePosDecoder
 
 
 keyDecoder : Decoder Keys
@@ -230,3 +231,10 @@ offsetPosDecoder =
     Decode.map2 (,)
         (Decode.field "offsetX" Decode.float)
         (Decode.field "offsetY" Decode.float)
+
+
+pagePosDecoder : Decoder Coordinates
+pagePosDecoder =
+    Decode.map2 (,)
+        (Decode.field "pageX" Decode.float)
+        (Decode.field "pageY" Decode.float)
