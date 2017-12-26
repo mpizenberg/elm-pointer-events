@@ -1,13 +1,7 @@
 module Main exposing (..)
 
-{-| Multi touch example.
-
-Compile using `elm-make Main.elm --output Main.js`
-
--}
-
 import Html exposing (..)
-import MultiTouch
+import Html.Attributes exposing (..)
 import Touch
 
 
@@ -15,8 +9,8 @@ main : Program Never TouchEvent TouchEvent
 main =
     beginnerProgram
         { model = None
-        , update = \newEvent _ -> newEvent
         , view = view
+        , update = \event _ -> event
         }
 
 
@@ -28,12 +22,20 @@ type TouchEvent
     | Cancel Touch.Event
 
 
+update : TouchEvent -> a -> TouchEvent
+update event _ =
+    event
+
+
 view : TouchEvent -> Html TouchEvent
 view event =
     div
-        [ MultiTouch.onStart Start
-        , MultiTouch.onMove Move
-        , MultiTouch.onEnd End
-        , MultiTouch.onCancel Cancel
+        [ Touch.onStart Start
+        , Touch.onMove Move
+        , Touch.onEnd End
+        , Touch.onCancel Cancel
+
+        -- no touch-action
+        , style [ ( "touch-action", "none" ) ]
         ]
         [ text <| toString event ]

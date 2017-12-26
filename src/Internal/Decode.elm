@@ -8,6 +8,49 @@ module Internal.Decode exposing (..)
 import Json.Decode as Decode exposing (Decoder)
 
 
+type alias Keys =
+    { alt : Bool
+    , ctrl : Bool
+    , shift : Bool
+    }
+
+
 all : List (Decoder a) -> Decoder (List a)
 all =
     List.foldr (Decode.map2 (::)) (Decode.succeed [])
+
+
+keys : Decoder Keys
+keys =
+    Decode.map3 Keys
+        (Decode.field "altKey" Decode.bool)
+        (Decode.field "ctrlKey" Decode.bool)
+        (Decode.field "shiftKey" Decode.bool)
+
+
+clientPos : Decoder ( Float, Float )
+clientPos =
+    Decode.map2 (,)
+        (Decode.field "clientX" Decode.float)
+        (Decode.field "clientY" Decode.float)
+
+
+offsetPos : Decoder ( Float, Float )
+offsetPos =
+    Decode.map2 (,)
+        (Decode.field "offsetX" Decode.float)
+        (Decode.field "offsetY" Decode.float)
+
+
+pagePos : Decoder ( Float, Float )
+pagePos =
+    Decode.map2 (,)
+        (Decode.field "pageX" Decode.float)
+        (Decode.field "pageY" Decode.float)
+
+
+screenPos : Decoder ( Float, Float )
+screenPos =
+    Decode.map2 (,)
+        (Decode.field "screenX" Decode.float)
+        (Decode.field "screenY" Decode.float)

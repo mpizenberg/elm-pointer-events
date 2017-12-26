@@ -5,82 +5,150 @@
 
 module Touch
     exposing
-        ( Coordinates
-        , Event
-        , changedTouches
-        , clientPos
-        , targetTouches
-        , touches
+        ( Event
+        , Keys
+        , Touch
+        , eventDecoder
+        , onCancel
+        , onEnd
+        , onMove
+        , onStart
         )
 
-{-| This module exposes types and functions
-common to both single and multi touch interactions.
+{-| Handling Touch events in elm.
 
-@docs Event, changedTouches, targetTouches, touches
+@docs Event, Keys, Touch
 
-@docs Coordinates, clientPos
+@docs onStart, onMove, onEnd, onCancel
+
+@docs eventDecoder
 
 -}
 
 import Dict exposing (Dict)
-import Internal.Touch
+import Html
+import Html.Events
+import Internal.Decode
+import Json.Decode as Decode exposing (Decoder)
 
 
-{-| Type alias for a touch event.
-
-The properties `touches`, `targetTouches` and `changedTouches`
-are accessible through their corresponding functions.
-
-To have more info about these properties and how to use them,
-please refer to the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/Events/touchstart)
-
+{-| Touch event.
 -}
 type alias Event =
-    Internal.Touch.Event
+    { keys : Keys
+    , changedTouches : Dict Int Touch
+    , targetTouches : Dict Int Touch
+    , touches : Dict Int Touch
+    }
 
 
-{-| Retrieve the `changedTouches` property.
-
-It returns a dictionary whose keys are the unique identifiers
-of the touches.
-
+{-| Keys modifiers.
 -}
-changedTouches : Event -> Dict Int Coordinates
-changedTouches =
-    .changedTouches
+type alias Keys =
+    { alt : Bool
+    , ctrl : Bool
+    , shift : Bool
+    }
 
 
-{-| Retrieve the `targetTouches` property.
-
-It returns a dictionary whose keys are the unique identifiers
-of the touches.
-
+{-| A Touch object.
 -}
-targetTouches : Event -> Dict Int Coordinates
-targetTouches =
-    .targetTouches
+type alias Touch =
+    { identifier : Int
+    , clientPos : ( Float, Float )
+    , pagePos : ( Float, Float )
+    , screenPos : ( Float, Float )
+    }
 
 
-{-| Retrieve the `touches` property.
 
-It returns a dictionary whose keys are the unique identifiers
-of the touches.
+-- EVENTS ############################################################
 
+
+{-| Triggered on a "touchstart" event.
 -}
-touches : Event -> Dict Int Coordinates
-touches =
-    .touches
+onStart : (Event -> msg) -> Html.Attribute msg
+onStart =
+    onWithOptions "touchstart" stopOptions
 
 
-{-| A simple type alias for the coordinates of a JavaScript
-[Touch](https://developer.mozilla.org/en-US/docs/Web/API/Touch) object.
+{-| Triggered on a "touchmove" event.
 -}
-type alias Coordinates =
-    Internal.Touch.Coordinates
+onMove : (Event -> msg) -> Html.Attribute msg
+onMove =
+    onWithOptions "touchmove" stopOptions
 
 
-{-| Retrieve the clientX and clientY coordinates.
+{-| Triggered on a "touchend" event.
 -}
-clientPos : Coordinates -> ( Float, Float )
-clientPos coordinates =
-    ( .clientX coordinates, .clientY coordinates )
+onEnd : (Event -> msg) -> Html.Attribute msg
+onEnd =
+    onWithOptions "touchend" stopOptions
+
+
+{-| Triggered on a "touchcancel" event.
+-}
+onCancel : (Event -> msg) -> Html.Attribute msg
+onCancel =
+    onWithOptions "touchcancel" stopOptions
+
+
+onWithOptions : String -> Html.Events.Options -> (Event -> msg) -> Html.Attribute msg
+onWithOptions event options tag =
+    Decode.map tag eventDecoder
+        |> Html.Events.onWithOptions event options
+
+
+stopOptions : Html.Events.Options
+stopOptions =
+    { preventDefault = True
+    , stopPropagation = True
+    }
+
+
+
+-- DECODERS ##########################################################
+
+
+{-| Touch event decoder.
+-}
+eventDecoder : Decoder Event
+eventDecoder =
+    Decode.map4 Event
+        Internal.Decode.keys
+        (Decode.field "changedTouches" decodeTouchList)
+        (Decode.field "targetTouches" decodeTouchList)
+        (Decode.field "touches" decodeTouchList)
+
+
+decodeTouchList : Decoder (Dict Int Touch)
+decodeTouchList =
+    Decode.field "length" Decode.int
+        |> Decode.andThen decodeNbTouches
+
+
+decodeNbTouches : Int -> Decoder (Dict Int Touch)
+decodeNbTouches nbTouches =
+    List.range 0 (nbTouches - 1)
+        |> List.map (decodeOneTouch >> Decode.map touchTuple)
+        |> Internal.Decode.all
+        |> Decode.map Dict.fromList
+
+
+decodeOneTouch : Int -> Decoder Touch
+decodeOneTouch n =
+    Decode.field (toString n) touchDecoder
+
+
+touchTuple : Touch -> ( Int, Touch )
+touchTuple touch =
+    ( touch.identifier, touch )
+
+
+touchDecoder : Decoder Touch
+touchDecoder =
+    Decode.map4 Touch
+        (Decode.field "identifier" Decode.int)
+        Internal.Decode.clientPos
+        Internal.Decode.pagePos
+        Internal.Decode.screenPos
