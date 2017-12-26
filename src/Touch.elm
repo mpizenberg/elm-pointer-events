@@ -14,6 +14,8 @@ module Touch
         , onMove
         , onStart
         , onWithOptions
+        , touchDecoder
+        , touchListDecoder
         )
 
 {-| Handling touch events.
@@ -28,7 +30,7 @@ module Touch
 
 # Advanced Usage
 
-@docs onWithOptions, eventDecoder
+@docs onWithOptions, eventDecoder, touchDecoder, touchListDecoder
 
 -}
 
@@ -209,34 +211,14 @@ eventDecoder : Decoder Event
 eventDecoder =
     Decode.map4 Event
         Internal.Decode.keys
-        (Decode.field "changedTouches" decodeTouchList)
-        (Decode.field "targetTouches" decodeTouchList)
-        (Decode.field "touches" decodeTouchList)
+        (Decode.field "changedTouches" <| touchListDecoder touchDecoder)
+        (Decode.field "targetTouches" <| touchListDecoder touchDecoder)
+        (Decode.field "touches" <| touchListDecoder touchDecoder)
 
 
-decodeTouchList : Decoder (List Touch)
-decodeTouchList =
-    Decode.field "length" Decode.int
-        |> Decode.andThen decodeNbTouches
-
-
-decodeNbTouches : Int -> Decoder (List Touch)
-decodeNbTouches nbTouches =
-    List.range 0 (nbTouches - 1)
-        |> List.map decodeOneTouch
-        |> Internal.Decode.all
-
-
-decodeOneTouch : Int -> Decoder Touch
-decodeOneTouch n =
-    Decode.field (toString n) touchDecoder
-
-
-touchTuple : Touch -> ( Int, Touch )
-touchTuple touch =
-    ( touch.identifier, touch )
-
-
+{-| Touch object decoder.
+The decoder is provided so that you can extend touch events if something you need is not provided.
+-}
 touchDecoder : Decoder Touch
 touchDecoder =
     Decode.map4 Touch
@@ -244,3 +226,48 @@ touchDecoder =
         Internal.Decode.clientPos
         Internal.Decode.pagePos
         Internal.Decode.screenPos
+
+
+{-| Personalized TouchList decoder.
+This decoder is provided so that you can extend touch events if something you need is not provided.
+If for example, you need the [`Touch.force`][touch-force] property,
+(which is not implemented by this package since not compatible with most browsers)
+and can guaranty in your use case that it will be used with a compatible browser,
+you could define:
+
+    type alias MyTouchEvent =
+        { changedTouches : TouchWithForce
+        }
+
+    type alias TouchWithForce =
+        { touch : Touch.Touch
+        , force : Float
+        }
+
+    decodeMyTouchEvent : Decoder MyTouchEvent
+    decodeMyTouchEvent =
+        Decode.map MyTouchEvent
+            (Decode.field "changedTouches" (touchListDecoder decodeWithForce))
+
+    decodeWithForce : Decoder TouchWithForce
+    decodeWithForce =
+        Decode.map2 TouchWithForce
+            Touch.eventDecoder
+            (Decode.field "force" Decode.float)
+
+[touch-force]: https://developer.mozilla.org/en-US/docs/Web/API/Touch/force
+
+-}
+touchListDecoder : Decoder a -> Decoder (List a)
+touchListDecoder specialTouchDecoder =
+    let
+        decodeNbTouches nbTouches =
+            List.range 0 (nbTouches - 1)
+                |> List.map decodeOneTouch
+                |> Internal.Decode.all
+
+        decodeOneTouch n =
+            Decode.field (toString n) specialTouchDecoder
+    in
+    Decode.field "length" Decode.int
+        |> Decode.andThen decodeNbTouches
