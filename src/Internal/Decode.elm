@@ -3,7 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Private.Decode exposing (..)
+module Internal.Decode exposing (..)
 
 import Json.Decode as Decode exposing (Decoder)
 

@@ -3,15 +3,15 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Private.Touch exposing (..)
+module Internal.Touch exposing (..)
 
 {-| This module exposes internally types and constants
 common to both single and multi touch interactions.
 -}
 
-import Json.Decode as Decode exposing (Decoder)
-import Html.Events
 import Dict exposing (Dict)
+import Html.Events
+import Json.Decode as Decode exposing (Decoder)
 
 
 type alias Event =

@@ -5,12 +5,12 @@
 
 module Touch
     exposing
-        ( Event
+        ( Coordinates
+        , Event
         , changedTouches
+        , clientPos
         , targetTouches
         , touches
-        , Coordinates
-        , clientPos
         )
 
 {-| This module exposes types and functions
@@ -22,8 +22,8 @@ common to both single and multi touch interactions.
 
 -}
 
-import Private.Touch
 import Dict exposing (Dict)
+import Internal.Touch
 
 
 {-| Type alias for a touch event.
@@ -36,7 +36,7 @@ please refer to the [Mozilla documentation](https://developer.mozilla.org/en-US/
 
 -}
 type alias Event =
-    Private.Touch.Event
+    Internal.Touch.Event
 
 
 {-| Retrieve the `changedTouches` property.
@@ -76,7 +76,7 @@ touches =
 [Touch](https://developer.mozilla.org/en-US/docs/Web/API/Touch) object.
 -}
 type alias Coordinates =
-    Private.Touch.Coordinates
+    Internal.Touch.Coordinates
 
 
 {-| Retrieve the clientX and clientY coordinates.

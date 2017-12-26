@@ -5,10 +5,10 @@
 
 module SingleTouch
     exposing
-        ( onStart
-        , onMove
+        ( onCancel
         , onEnd
-        , onCancel
+        , onMove
+        , onStart
         )
 
 {-| This module exposes functions
@@ -29,9 +29,9 @@ finer grained control over the processing of the touch event.
 
 import Html
 import Html.Events as Events
-import Touch
-import Private.Touch
+import Internal.Touch
 import Json.Decode as Decode exposing (Decoder)
+import Touch
 
 
 {-| Triggered on a "touchstart" event.
@@ -69,11 +69,11 @@ onCancel tag =
 on : String -> (Touch.Coordinates -> msg) -> Html.Attribute msg
 on event tag =
     Decode.map tag decodeCoordinates
-        |> Events.onWithOptions event Private.Touch.stopOptions
+        |> Events.onWithOptions event Internal.Touch.stopOptions
 
 
 decodeCoordinates : Decoder Touch.Coordinates
 decodeCoordinates =
-    Private.Touch.decode
+    Internal.Touch.decode
         |> Decode.at [ "changedTouches", "0" ]
         |> Decode.map .coordinates

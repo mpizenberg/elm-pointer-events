@@ -5,10 +5,10 @@
 
 module MultiTouch
     exposing
-        ( onStart
-        , onMove
+        ( onCancel
         , onEnd
-        , onCancel
+        , onMove
+        , onStart
         )
 
 {-| This module exposes functions
@@ -18,13 +18,13 @@ to deal with multitouch interactions.
 
 -}
 
+import Dict exposing (Dict)
 import Html
 import Html.Events as Events
-import Touch
-import Private.Touch exposing (Touch)
-import Private.Decode
+import Internal.Decode
+import Internal.Touch exposing (Touch)
 import Json.Decode as Decode exposing (Decoder)
-import Dict exposing (Dict)
+import Touch
 
 
 {-| Triggered on a "touchstart" event.
@@ -62,12 +62,12 @@ onCancel tag =
 on : String -> (Touch.Event -> msg) -> Html.Attribute msg
 on event tag =
     Decode.map tag decodeTouchEvent
-        |> Events.onWithOptions event Private.Touch.stopOptions
+        |> Events.onWithOptions event Internal.Touch.stopOptions
 
 
 decodeTouchEvent : Decoder Touch.Event
 decodeTouchEvent =
-    Decode.map3 Private.Touch.Event
+    Decode.map3 Internal.Touch.Event
         (Decode.field "changedTouches" decodeTouchList)
         (Decode.field "targetTouches" decodeTouchList)
         (Decode.field "touches" decodeTouchList)
@@ -82,11 +82,11 @@ decodeTouchList =
 decodeTouches : Int -> Decoder (Dict Int Touch.Coordinates)
 decodeTouches nbTouches =
     List.range 0 (nbTouches - 1)
-        |> List.map (decodeTouch >> Decode.map Private.Touch.toTuple)
-        |> Private.Decode.all
+        |> List.map (decodeTouch >> Decode.map Internal.Touch.toTuple)
+        |> Internal.Decode.all
         |> Decode.map Dict.fromList
 
 
 decodeTouch : Int -> Decoder Touch
 decodeTouch n =
-    Decode.field (toString n) Private.Touch.decode
+    Decode.field (toString n) Internal.Touch.decode
