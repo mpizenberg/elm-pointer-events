@@ -52,6 +52,7 @@ You can use them exactly like the previous examples.
 
 import Html exposing (Attribute)
 import Html.Events as Events
+import Internal.Decode
 import Json.Decode as Decode exposing (Decoder)
 
 
@@ -328,20 +329,12 @@ And use it like follows:
 eventDecoder : Decoder Event
 eventDecoder =
     Decode.map6 Event
-        keysDecoder
+        Internal.Decode.keys
         buttonDecoder
-        clientPosDecoder
-        offsetPosDecoder
-        pagePosDecoder
-        screenPosDecoder
-
-
-keysDecoder : Decoder Keys
-keysDecoder =
-    Decode.map3 Keys
-        (Decode.field "altKey" Decode.bool)
-        (Decode.field "ctrlKey" Decode.bool)
-        (Decode.field "shiftKey" Decode.bool)
+        Internal.Decode.clientPos
+        Internal.Decode.offsetPos
+        Internal.Decode.pagePos
+        Internal.Decode.screenPos
 
 
 buttonDecoder : Decoder Button
@@ -370,31 +363,3 @@ buttonFromId id =
 
         _ ->
             ErrorButton
-
-
-clientPosDecoder : Decoder ( Float, Float )
-clientPosDecoder =
-    Decode.map2 (,)
-        (Decode.field "clientX" Decode.float)
-        (Decode.field "clientY" Decode.float)
-
-
-offsetPosDecoder : Decoder ( Float, Float )
-offsetPosDecoder =
-    Decode.map2 (,)
-        (Decode.field "offsetX" Decode.float)
-        (Decode.field "offsetY" Decode.float)
-
-
-pagePosDecoder : Decoder ( Float, Float )
-pagePosDecoder =
-    Decode.map2 (,)
-        (Decode.field "pageX" Decode.float)
-        (Decode.field "pageY" Decode.float)
-
-
-screenPosDecoder : Decoder ( Float, Float )
-screenPosDecoder =
-    Decode.map2 (,)
-        (Decode.field "screenX" Decode.float)
-        (Decode.field "screenY" Decode.float)
