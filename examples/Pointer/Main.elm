@@ -28,15 +28,17 @@ update event _ =
 
 view : PointerEvent -> Html PointerEvent
 view event =
-    div
-        [ Pointer.onDown Down
-        , Pointer.onMove Move
-        , Pointer.onUp Up
+    div []
+        [ p
+            [ Pointer.onDown Down
+            , Pointer.onMove Move
+            , Pointer.onUp Up
 
-        -- no touch-action
-        , style [ ( "touch-action", "none" ) ]
+            -- no touch-action
+            , style [ ( "touch-action", "none" ) ]
 
-        -- elm PEP (polyfill) compatibility
-        , attribute "elm-pep" "true"
+            -- pointer capture hack to continue "globally" the event anywhere on document.
+            , attribute "onpointerdown" "event.target.setPointerCapture(event.pointerId);"
+            ]
+            [ text <| toString event ]
         ]
-        [ text <| toString event ]
