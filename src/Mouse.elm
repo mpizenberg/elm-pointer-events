@@ -18,13 +18,10 @@ module Mouse
 
 {-| Handling detailed mouse events.
 
-
-# A Mouse Event
-
 @docs Event, Keys, Button
 
 
-# Simple Default Usage
+# Basic Usage
 
 The three default mouse events are `mousedown`, `mousemove` and `mouseup`.
 

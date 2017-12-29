@@ -10,13 +10,15 @@ module Pointer
 
 {-| Handling pointer events.
 
-
-# Simple default usage
-
-@docs Event, onDown, onMove, onUp
+@docs Event
 
 
-# Advanced personalized usage
+# Basic Usage
+
+@docs onDown, onMove, onUp
+
+
+# Advanced Usage
 
 @docs onWithOptions, eventDecoder
 

@@ -3,7 +3,30 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Wheel exposing (..)
+module Wheel
+    exposing
+        ( DeltaMode(..)
+        , Event
+        , eventDecoder
+        , onWheel
+        , onWithOptions
+        )
+
+{-| Handling wheel events.
+
+@docs Event, DeltaMode
+
+
+# Basic Usage
+
+@docs onWheel
+
+
+# Advanced Usage
+
+@docs onWithOptions, eventDecoder
+
+-}
 
 import Html
 import Html.Events
@@ -31,6 +54,8 @@ type alias Event =
     }
 
 
+{-| The deltaMode property of a Wheel event.
+-}
 type DeltaMode
     = DeltaPixel
     | DeltaLine
@@ -55,7 +80,7 @@ And we want to zoom in or out on an element depending on a wheel event:
 
     div
         [ Wheel.onWheel chooseZoom ]
-        [ text "some zoomable area" ]
+        [ text "some zoomable area like an image" ]
 
 -}
 onWheel : (Event -> msg) -> Html.Attribute msg

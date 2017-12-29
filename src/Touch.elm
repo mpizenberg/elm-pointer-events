@@ -240,7 +240,7 @@ you could define:
         }
 
     type alias TouchWithForce =
-        { touch : Touch.Touch
+        { touch : Touch
         , force : Float
         }
 
@@ -252,7 +252,7 @@ you could define:
     decodeWithForce : Decoder TouchWithForce
     decodeWithForce =
         Decode.map2 TouchWithForce
-            Touch.eventDecoder
+            Touch.touchDecoder
             (Decode.field "force" Decode.float)
 
 [touch-force]: https://developer.mozilla.org/en-US/docs/Web/API/Touch/force
