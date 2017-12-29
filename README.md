@@ -8,15 +8,11 @@
 [badge-license]: https://img.shields.io/badge/license-MPL--2.0-blue.svg?style=flat-square
 [license]: https://www.mozilla.org/en-US/MPL/2.0/
 
-> Warning: merge in progress (issue #1).
->
-> The goal being to merge all my pointer-related packages here for elm 0.19, namely:
+> Warning: merge in progress for version 2.0.0 (issue #3).
 >
 > * [elm-mouse-events]
 > * [elm-touch-events]
 > * [elm-pointer-events]
->
-> Remark: other improvements might also happen before next major version (see issue #2)
 
 [elm-mouse-events]: https://github.com/mpizenberg/elm-mouse-events
 [elm-touch-events]: https://github.com/mpizenberg/elm-touch-events
@@ -26,11 +22,12 @@ This package aims at handling all kinds of pointer events in elm.
 To be more specific, this means:
 
 * [`MouseEvent`][mouse-events]: standard mouse events
+* [`WheelEvent`][wheel-events]: standard wheel events
 * [`TouchEvent`][touch-events]: standard touch events
 * [`PointerEvent`][pointer-events]: new pointer events
 
 If you are looking for only one standard kind of interaction (mouse or touch),
-I recommend that you use the `Mouse` or `Touch`/`SingleTouch`/`MultiTouch` modules.
+I recommend that you use the `Mouse` or `Touch` modules.
 If however, you are designing a multi-device (desktop/tablet/mobile/...) experience,
 I recommend that you use the `Pointer` module.
 
@@ -45,6 +42,7 @@ So I strongly recommend to use it in pair with the [elm-pep polyfill][elm-pep]
 for compatibility with major browsers.
 
 [mouse-events]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
+[wheel-events]: https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
 [touch-events]: https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
 [pointer-events]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 [caniuse-pointer]: https://caniuse.com/#feat=pointer
@@ -83,46 +81,69 @@ If you are using the `Pointer` module,
 it is recommended that you deactivate `touch-action`
 to disable browsers scroll/pinch/... touch behaviors.
 
+If you are designing some kind of drawing application,
+you want to be able to keep track of a pointer that leave the
+drawing area to know if the pointer went up.
+This is possible using what is called [pointer capture][pointer-capture].
+The example below demonstrates how to do this.
+
 
 ```elm
 div
-    [ Pointer.onMove ...
+    [ Pointer.onDown ...
+    , Pointer.onMove ...
+    , Pointer.onUp ...
+
     -- no touch-action
     , Html.Attributes.style [ ( "touch-action", "none" ) ]
+
+    -- pointer capture hack to continue "globally" the event anywhere on document
+    , attribute "onpointerdown" "event.target.setPointerCapture(event.pointerId);"
     ]
-    []
+    [ -- the drawing area
+    ]
 ```
 
 [offsetX]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/offsetX
+[pointer-capture]: https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture
+
 
 ### Touch
 
-Touch interactions can be managed using the `Touch`, `SingleTouch` and `MultiTouch` modules.
-The `Touch` module, regroups data structures common to both single- and multi-touch interactions.
-In case of simple, single touch interactions, one might use the `SingleTouch` module like below:
+Multi-touch interactions can be managed using the `Touch` module.
+In case you want only to handle single touch interactions,
+you could do something like below:
 
 ```elm
-import SingleTouch
 import Touch
 
 -- ...
 
 type Msg
-    = TouchStartAt ( Float, Float )
+    = StartAt ( Float, Float )
+    | MoveAt ( Float, Float )
+    | EndAt ( Float, Float )
 
 view =
     div
-        [SingleTouch.onStart (\coord -> TouchStartAt (Touch.clientPos coord))]
+        [ Touch.onStart (StartAt << touchCoordinates)
+        , Touch.onMove (MoveAt << touchCoordinates)
+        , Touch.onEnd (EndAt << touchCoordinates)
+        ]
         [text "touch here"]
-```
 
-In order to have a finer grained control of the touch event,
-consider using the `MultiTouch` module.
+touchCoordinates : Touch.Event -> ( Float, Float )
+touchCoordinates touchEvent =
+    List.head touchEvent.changedTouches
+        |> Maybe.map .clientPos
+        |> Maybe.withDefault ( 0, 0 )
+
+```
 
 
 ## Examples
 
-Working examples are available in the `examples/` directory.
+Minimalist working examples are available for each module in the `examples/` directory.
 To test one example, `cd` into one of them and compile the elm file with the command:
 
 ```shell
@@ -143,8 +164,9 @@ to load the `index.html` page.
 
 If you are interested in contributing in any way
 (feedback, bug report, implementation of new functionality, ...)
-don't hesitate to reach out on slack (user mattpiz)
+don't hesitate to reach out on slack (user @mattpiz)
 and/or open an issue.
+Discussion is the best way to start any contribution.
 
 
 ## Documentation [![][badge-doc]][doc]
@@ -161,4 +183,6 @@ You can obtain one at https://mozilla.org/MPL/2.0/.
 
 ## Contributors
 
-Matthieu Pizenberg - @mpizenberg
+* Matthieu Pizenberg - @mpizenberg
+* Thomas Forgione - @tforgione ([elm-pep] polyfill)
+* Robert Vollmert - @robx ([elm-pep] polyfill)
