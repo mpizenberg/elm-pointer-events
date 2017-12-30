@@ -5,6 +5,7 @@ module Mouse
         , Keys
         , eventDecoder
         , onClick
+        , onContextMenu
         , onDoubleClick
         , onDown
         , onEnter
@@ -37,6 +38,8 @@ You can use them exactly like the previous examples.
 @docs onClick, onDoubleClick
 
 @docs onEnter, onOver, onLeave, onOut
+
+@docs onContextMenu
 
 
 # Advanced Usage
@@ -247,6 +250,14 @@ onLeave =
 onOut : (Event -> msg) -> Attribute msg
 onOut =
     onWithOptions "mouseout" stopOptions
+
+
+{-| Listen to `contextmenu` events.
+Fired on right mousedown, before the context menu is displayed.
+-}
+onContextMenu : (Event -> msg) -> Attribute msg
+onContextMenu =
+    onWithOptions "contextmenu" stopOptions
 
 
 {-| Choose the mouse event to listen to, and specify the event options.

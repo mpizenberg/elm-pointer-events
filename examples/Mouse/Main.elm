@@ -22,6 +22,7 @@ type MouseEvent
     | DoubleClick Mouse.Event
     | Over Mouse.Event
     | Out Mouse.Event
+    | ContextMenu Mouse.Event
 
 
 view : MouseEvent -> Html MouseEvent
@@ -35,6 +36,7 @@ view event =
             , Mouse.onDoubleClick DoubleClick
             , Mouse.onOver Over
             , Mouse.onOut Out
+            , Mouse.onContextMenu ContextMenu
             ]
             [ text <| toString event ]
         ]
