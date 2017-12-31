@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Drag
 import Html exposing (..)
+import Html.Attributes exposing (..)
 
 
 main : Program Never DragEvent DragEvent
@@ -27,18 +28,17 @@ type alias MetaData =
     }
 
 
-update : DragEvent -> DragEvent -> DragEvent
-update event _ =
-    event
-
-
 view : DragEvent -> Html DragEvent
 view event =
-    div []
+    div
+        -- Prevent any kind of drop outside of dropable area.
+        -- It changes the cursor and prevent the drop event from happening
+        [ attribute "ondragover" "event.dataTransfer.dropEffect = 'none'" ]
         [ p
-            [ Drag.onOver (metadata >> Over)
+            -- Dropable area
+            [ Drag.onOver (Over << metadata)
+            , Drag.onDrop (Drop << metadata)
             , Drag.onLeave (always Leave)
-            , Drag.onDrop (metadata >> Drop)
             ]
             [ text <| toString event ]
         ]
