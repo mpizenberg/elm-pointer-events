@@ -21,11 +21,6 @@ type PointerEvent
     | Up Pointer.Event
 
 
-update : PointerEvent -> PointerEvent -> PointerEvent
-update event _ =
-    event
-
-
 view : PointerEvent -> Html PointerEvent
 view event =
     div []

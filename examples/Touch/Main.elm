@@ -22,11 +22,6 @@ type TouchEvent
     | Cancel Touch.Event
 
 
-update : TouchEvent -> a -> TouchEvent
-update event _ =
-    event
-
-
 view : TouchEvent -> Html TouchEvent
 view event =
     div

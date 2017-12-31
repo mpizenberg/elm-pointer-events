@@ -18,11 +18,6 @@ type WheelEvent
     | Wheel Wheel.Event
 
 
-update : WheelEvent -> a -> WheelEvent
-update event _ =
-    event
-
-
 view : WheelEvent -> Html WheelEvent
 view event =
     div
