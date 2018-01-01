@@ -259,15 +259,5 @@ you could define:
 
 -}
 touchListDecoder : Decoder a -> Decoder (List a)
-touchListDecoder specialTouchDecoder =
-    let
-        decodeNbTouches nbTouches =
-            List.range 0 (nbTouches - 1)
-                |> List.map decodeOneTouch
-                |> Internal.Decode.all
-
-        decodeOneTouch n =
-            Decode.field (toString n) specialTouchDecoder
-    in
-    Decode.field "length" Decode.int
-        |> Decode.andThen decodeNbTouches
+touchListDecoder =
+    Internal.Decode.dynamicListOf
