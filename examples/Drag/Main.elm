@@ -3,6 +3,7 @@ module Main exposing (..)
 import Drag
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Mouse
 
 
 main : Program Never DragEvent DragEvent
@@ -16,9 +17,15 @@ main =
 
 type DragEvent
     = None
-    | Over (List MetaData)
+    | Over WithoutRawData
     | Leave
-    | Drop (List MetaData)
+    | Drop WithoutRawData
+
+
+type alias WithoutRawData =
+    { mouseEvent : Mouse.Event
+    , metadata : List MetaData
+    }
 
 
 type alias MetaData =
@@ -33,25 +40,27 @@ view event =
     div
         -- Prevent any kind of drop outside of dropable area.
         -- It changes the cursor and prevent the drop event from happening
-        [ attribute "ondragover" "event.dataTransfer.dropEffect = 'none'" ]
+        [ attribute "ondragover" "event.dataTransfer.dropEffect = 'none'; event.preventDefault();" ]
         [ p
             -- Dropable area
-            [ Drag.onOver (Over << metadata)
-            , Drag.onDrop (Drop << metadata)
+            [ Drag.onOver (Over << withoutRawData)
+            , Drag.onDrop (Drop << withoutRawData)
             , Drag.onLeave (always Leave)
             ]
             [ text <| toString event ]
         ]
 
 
-metadata : Drag.Event -> List MetaData
-metadata event =
-    let
-        extractMetaData : Drag.File -> MetaData
-        extractMetaData file =
-            { name = file.name
-            , typeMIME = file.typeMIME
-            , size = file.size
-            }
-    in
-    List.map extractMetaData event.dataTransfer.files
+withoutRawData : Drag.Event -> WithoutRawData
+withoutRawData event =
+    { mouseEvent = event.mouseEvent
+    , metadata = List.map extractMetadata event.dataTransfer.files
+    }
+
+
+extractMetadata : Drag.File -> MetaData
+extractMetadata file =
+    { name = file.name
+    , typeMIME = file.typeMIME
+    , size = file.size
+    }

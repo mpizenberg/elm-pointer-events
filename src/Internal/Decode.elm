@@ -15,6 +15,21 @@ type alias Keys =
     }
 
 
+dynamicListOf : Decoder a -> Decoder (List a)
+dynamicListOf itemDecoder =
+    let
+        decodeN n =
+            List.range 0 (n - 1)
+                |> List.map decodeOne
+                |> all
+
+        decodeOne n =
+            Decode.field (toString n) itemDecoder
+    in
+    Decode.field "length" Decode.int
+        |> Decode.andThen decodeN
+
+
 all : List (Decoder a) -> Decoder (List a)
 all =
     List.foldr (Decode.map2 (::)) (Decode.succeed [])
