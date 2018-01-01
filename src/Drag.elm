@@ -3,7 +3,10 @@ module Drag
         ( DataTransfer
         , Event
         , File
+        , dataTransferDecoder
         , eventDecoder
+        , fileDecoder
+        , fileListDecoder
           -- , onDrag
         , onDrop
           -- , onEnd
@@ -11,6 +14,7 @@ module Drag
         , onLeave
         , onOver
           -- , onStart
+        , onWithOptions
         )
 
 {-| Handling drag events.
@@ -36,7 +40,9 @@ that cannot be done directly using the `Value`.
 
 # Advanced Usage
 
-@docs eventDecoder
+@docs onWithOptions
+
+@docs eventDecoder, dataTransferDecoder, fileListDecoder, fileDecoder
 
 -}
 
@@ -52,7 +58,7 @@ It corresponds to a JavaScript [DragEvent].
 
 Since a `DragEvent` inherits from `MouseEvent`,
 all mouse event related properties are provided in the
-`mouseEvent` attribute.
+`mouseEvent` attribute of type `Mouse.Event`.
 Please refer to the `Mouse` module for more information on this value.
 
 [DragEvent]: https://developer.mozilla.org/en-US/docs/Web/API/DragEvent
@@ -175,6 +181,8 @@ onEnd =
     onWithOptions "dragend" stopOptions
 
 
+{-| Personalize your drag events with chosen html options.
+-}
 onWithOptions : String -> Html.Events.Options -> (Event -> msg) -> Html.Attribute msg
 onWithOptions event options tag =
     Decode.map tag eventDecoder
@@ -192,7 +200,8 @@ stopOptions =
 -- DECODERS ##########################################################
 
 
-{-| Drag.Event decoder.
+{-| `Drag.Event` default decoder.
+It is provided in case you would like to extend it.
 -}
 eventDecoder : Decoder Event
 eventDecoder =
@@ -201,14 +210,27 @@ eventDecoder =
         Mouse.eventDecoder
 
 
+{-| `DataTransfer` decoder.
+It is provided in case you would like to extend it.
+-}
 dataTransferDecoder : Decoder DataTransfer
 dataTransferDecoder =
     Decode.map3 DataTransfer
-        (Decode.field "files" <| Internal.Decode.dynamicListOf fileDecoder)
+        (Decode.field "files" <| fileListDecoder fileDecoder)
         (Decode.field "types" <| Decode.list Decode.string)
         (Decode.field "dropEffect" Decode.string)
 
 
+{-| Turn a personalized file decoder into a `List` decoder.
+-}
+fileListDecoder : Decoder a -> Decoder (List a)
+fileListDecoder =
+    Internal.Decode.dynamicListOf
+
+
+{-| `File` decoder.
+It is provided in case you would like to extend it.
+-}
 fileDecoder : Decoder File
 fileDecoder =
     Decode.map4 File
