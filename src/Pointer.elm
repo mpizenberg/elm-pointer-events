@@ -1,6 +1,8 @@
 module Pointer
     exposing
-        ( Event
+        ( ContactDetails
+        , DeviceType
+        , Event
         , eventDecoder
         , onCancel
         , onDown
@@ -15,7 +17,7 @@ module Pointer
 
 {-| Handling pointer events.
 
-@docs Event
+@docs Event, DeviceType, ContactDetails
 
 
 # Basic Usage
@@ -61,10 +63,44 @@ And to know if the shift key was pressed:
 
 -}
 type alias Event =
-    { isPrimary : Bool
-    , pointerId : Int
+    { pointerType : DeviceType
     , pointer : Mouse.Event
+    , pointerId : Int
+    , isPrimary : Bool
+    , contactDetails : ContactDetails
     }
+
+
+{-| The type of device that generated the pointer event
+-}
+type DeviceType
+    = MouseType
+    | TouchType
+    | PenType
+
+
+{-| Details of the point of contact, for advanced use cases.
+-}
+type alias ContactDetails =
+    { width : Float
+    , height : Float
+    , pressure : Float
+    , tiltX : Float
+    , tiltY : Float
+    }
+
+
+stringToPointerType : String -> DeviceType
+stringToPointerType str =
+    case str of
+        "pen" ->
+            PenType
+
+        "touch" ->
+            TouchType
+
+        _ ->
+            MouseType
 
 
 
@@ -288,7 +324,24 @@ If such a need arises, please open an issue in [elm-pep].
 -}
 eventDecoder : Decoder Event
 eventDecoder =
-    Decode.map3 Event
-        (Decode.field "isPrimary" Decode.bool)
-        (Decode.field "pointerId" Decode.int)
+    Decode.map5 Event
+        (Decode.field "pointerType" pointerTypeDecoder)
         Mouse.eventDecoder
+        (Decode.field "pointerId" Decode.int)
+        (Decode.field "isPrimary" Decode.bool)
+        contactDetailsDecoder
+
+
+pointerTypeDecoder : Decoder DeviceType
+pointerTypeDecoder =
+    Decode.map stringToPointerType Decode.string
+
+
+contactDetailsDecoder : Decoder ContactDetails
+contactDetailsDecoder =
+    Decode.map5 ContactDetails
+        (Decode.field "width" Decode.float)
+        (Decode.field "height" Decode.float)
+        (Decode.field "pressure" Decode.float)
+        (Decode.field "tiltX" Decode.float)
+        (Decode.field "tiltY" Decode.float)
