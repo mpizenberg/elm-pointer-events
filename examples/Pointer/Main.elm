@@ -29,7 +29,7 @@ view event =
             , Pointer.onMove Move
             , Pointer.onUp Up
 
-            -- no touch-action
+            -- no touch-action (prevents scrolling and co.)
             , style [ ( "touch-action", "none" ) ]
 
             -- pointer capture hack to continue "globally" the event anywhere on document.
