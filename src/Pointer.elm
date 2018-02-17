@@ -2,8 +2,13 @@ module Pointer
     exposing
         ( Event
         , eventDecoder
+        , onCancel
         , onDown
+        , onEnter
+        , onLeave
         , onMove
+        , onOut
+        , onOver
         , onUp
         , onWithOptions
         )
@@ -15,7 +20,7 @@ module Pointer
 
 # Basic Usage
 
-@docs onDown, onMove, onUp
+@docs onDown, onMove, onUp, onCancel, onOver, onEnter, onOut, onLeave
 
 
 # Advanced Usage
@@ -135,6 +140,66 @@ onUp =
     onWithOptions "pointerup" stopOptions
 
 
+{-| Listen to `pointercancel` events.
+
+Similarly than with [`onDown`](#onDown), we can write something like:
+
+    div [ Pointer.onCancel (relativePos >> UpMsg) ] [ text "move here" ]
+
+-}
+onCancel : (Event -> msg) -> Html.Attribute msg
+onCancel =
+    onWithOptions "pointercancel" stopOptions
+
+
+{-| Listen to `pointerover` events.
+
+Similarly than with [`onDown`](#onDown), we can write something like:
+
+    div [ Pointer.onOver (relativePos >> UpMsg) ] [ text "move in here" ]
+
+-}
+onOver : (Event -> msg) -> Html.Attribute msg
+onOver =
+    onWithOptions "pointerover" stopOptions
+
+
+{-| Listen to `pointerenter` events.
+
+Similarly than with [`onDown`](#onDown), we can write something like:
+
+    div [ Pointer.onEnter (relativePos >> UpMsg) ] [ text "move in here" ]
+
+-}
+onEnter : (Event -> msg) -> Html.Attribute msg
+onEnter =
+    onWithOptions "pointerenter" stopOptions
+
+
+{-| Listen to `pointerout` events.
+
+Similarly than with [`onDown`](#onDown), we can write something like:
+
+    div [ Pointer.onOut (relativePos >> UpMsg) ] [ text "move out of here" ]
+
+-}
+onOut : (Event -> msg) -> Html.Attribute msg
+onOut =
+    onWithOptions "pointerout" stopOptions
+
+
+{-| Listen to `pointerleave` events.
+
+Similarly than with [`onDown`](#onDown), we can write something like:
+
+    div [ Pointer.onLeave (relativePos >> UpMsg) ] [ text "move out of here" ]
+
+-}
+onLeave : (Event -> msg) -> Html.Attribute msg
+onLeave =
+    onWithOptions "pointerleave" stopOptions
+
+
 {-| Choose the pointer event to listen to, and specify the event options.
 
 The `Options` type here is the standard [`Html.Events.Options`][html-options] type.
@@ -147,16 +212,8 @@ you can change it with for example:
         { stopPropagation = False, preventDefault = True }
             |> Pointer.onWithOptions "pointerdown"
 
-You can also use `Pointer.onWithOptions` to listen to an event not
-already covered by the functions in this package, like `pointercancel`:
-
-    onCancel : (Pointer.Event -> msg) -> Html.Attribute msg
-    onCancel =
-        { stopPropagation = True, preventDefault = True }
-            |> Pointer.onWithOptions "pointercancel"
-
-BEWARE that the minimalist [elm-pep] polyfill may not support
-this event. So if you rely on it for compatibility with browsers
+BEWARE that the minimalist [elm-pep] polyfill may not support all events.
+So if you rely on it for compatibility with browsers
 not supporting pointer events, such event may never get triggered.
 If such a need arises, please open an issue in [elm-pep].
 
