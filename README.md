@@ -8,21 +8,12 @@
 [badge-license]: https://img.shields.io/badge/license-MPL--2.0-blue.svg?style=flat-square
 [license]: https://www.mozilla.org/en-US/MPL/2.0/
 
-> Warning: merge in progress for version 2.0.0 (issue #3).
->
-> * [elm-mouse-events]
-> * [elm-touch-events]
-> * [elm-pointer-events]
-
-[elm-mouse-events]: https://github.com/mpizenberg/elm-mouse-events
-[elm-touch-events]: https://github.com/mpizenberg/elm-touch-events
-[elm-pointer-events]: https://github.com/mpizenberg/elm-pointer-events
-
 This package aims at handling all kinds of pointer events in elm.
 To be more specific, this means:
 
 * [`MouseEvent`][mouse-events]: standard mouse events
 * [`WheelEvent`][wheel-events]: standard wheel events
+* [`DragEvent`][drag-events]: partial support of drag events
 * [`TouchEvent`][touch-events]: standard touch events
 * [`PointerEvent`][pointer-events]: new pointer events
 
@@ -37,15 +28,16 @@ Since maintaining both mouse and touch events for compatibility
 is really cumbersome, using a unified pointer events interface
 is a relief.
 
-Beware though, that the pointer API [is not well supported by all browsers][caniuse-pointer].
-So I strongly recommend to use it in pair with the [elm-pep polyfill][elm-pep]
+Beware though, that the pointer API is not well supported by all browsers.
+Firefox < 59 and Safari do not natively support pointer events.
+So I strongly recommend to use this package in pair with the [elm-pep polyfill][elm-pep]
 for compatibility with major browsers.
 
 [mouse-events]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
 [wheel-events]: https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
+[drag-events]: https://developer.mozilla.org/en-US/docs/Web/API/DragEvent
 [touch-events]: https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
 [pointer-events]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
-[caniuse-pointer]: https://caniuse.com/#feat=pointer
 [elm-pep]: https://github.com/mpizenberg/elm-pep
 
 
@@ -81,7 +73,7 @@ If you are using the `Pointer` module,
 it is recommended that you deactivate `touch-action`
 to disable browsers scroll/pinch/... touch behaviors.
 
-If you are designing some kind of drawing application,
+Also, if you are designing some kind of drawing application,
 you want to be able to keep track of a pointer that leave the
 drawing area to know if the pointer went up.
 This is possible using what is called [pointer capture][pointer-capture].
@@ -111,7 +103,7 @@ div
 ### Touch
 
 Multi-touch interactions can be managed using the `Touch` module.
-In case you want only to handle single touch interactions,
+In case you only want to handle single touch interactions,
 you could do something like below:
 
 ```elm
@@ -169,12 +161,16 @@ and/or open an issue.
 Discussion is the best way to start any contribution.
 
 
-## Documentation [![][badge-doc]][doc]
+## Documentation
+
+[![][badge-doc]][doc]
 
 The package documentation is available on the [elm package website][doc].
 
 
-## License [![][badge-license]][license]
+## License
+
+[![][badge-license]][license]
 
 This Source Code Form is subject to the terms of the Mozilla Public License,v. 2.0.
 If a copy of the MPL was not distributed with this file,
