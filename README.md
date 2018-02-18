@@ -133,6 +133,41 @@ touchCoordinates touchEvent =
 ```
 
 
+### Wheel
+
+You can manage `Wheel` events with the corresponding module.
+Since it is an extension to the `Mouse` module all mouse inherited properties
+are also available in the attribute `mouseEvent`.
+
+To simply check for wheel rolling up or down you could do something like below:
+
+```elm
+import Wheel
+
+-- ...
+
+type Msg
+    = Scrolling Float
+
+view =
+    div
+        [Wheel.onWheel (\event -> Scrolling event.deltaY)]
+        [text "scroll here"]
+```
+
+
+### Drag
+
+Due to the limitation of not being able to call JavaScript functions directly in elm,
+full drag and drop API cannot be supported.
+
+However, most of the time we just need to be able to drop some files
+from the file system to the web page.
+By providing the dragover, and drop events, this module enables such use case.
+Of course, the file retrieved in the form of a `Json.Decode.Value` would still
+have to be sent through ports if further processing is needed
+that cannot be done directly in elm using the `Value`.
+
 ## Examples
 
 Minimalist working examples are available for each module in the `examples/` directory.
