@@ -125,7 +125,7 @@ events with something like:
 However, since the [Pointer API][pointer-events]
 is not well [supported by all browsers][caniuse-pointer],
 I strongly recommend to use it in pair with the [elm-pep polyfill][elm-pep]
-for compatibility with all major browsers.
+for compatibility with Safari and Firefox < 59.
 It is also recommended that you deactivate `touch-action`
 to disable browsers scroll behaviors.
 
@@ -134,11 +134,8 @@ to disable browsers scroll behaviors.
         , Pointer.onMove ...
         , Pointer.onUp ...
 
-        -- no touch-action
+        -- no touch-action (prevent scroll etc.)
         , Html.Attributes.style [ ( "touch-action", "none" ) ]
-
-        -- use elm-pep polyfill
-        , Html.Attributes.attribute "elm-pep" "true"
         ]
         []
 
@@ -248,11 +245,6 @@ you can change it with for example:
         { stopPropagation = False, preventDefault = True }
             |> Pointer.onWithOptions "pointerdown"
 
-BEWARE that the minimalist [elm-pep] polyfill may not support all events.
-So if you rely on it for compatibility with browsers
-not supporting pointer events, such event may never get triggered.
-If such a need arises, please open an issue in [elm-pep].
-
 [html-options]: http://package.elm-lang.org/packages/elm-lang/html/2.0.0/Html-Events#Options
 
 -}
@@ -275,30 +267,30 @@ stopOptions =
 
 {-| An Event decoder for pointer events.
 
-Similarly than with the [`elm-mouse-events`][Mouse-Event] package,
-The decoder is provided so that you can extend `Pointer.Event` with
-specific properties you need. If you need for example the [`pressure`][pressure]
+Similarly than with the `Mouse` module, the decoder is provided so that
+you can extend `Pointer.Event` with specific properties you need.
+If you need for example the [`tangentialPressure`][tangentialPressure]
 attribute of the pointer event, you could extend the present decoder like:
 
     type alias MyPointerEvent =
         { pointerEvent : Pointer.Event
-        , pressure : Float
+        , tangentialPressure : Float
         }
 
     myEventDecoder : Decoder MyPointerEvent
     myEventDecoder =
         Decode.map2 MyPointerEvent
             Pointer.eventDecoder
-            (Decode.field "pressure" Decode.float)
+            (Decode.field "tangentialPressure" Decode.float)
 
 And use it like as follows:
 
     type Msg
-        = PressureMsg Float
+        = TangentialPressureMsg Float
 
     div
-        [ myOnDown (.pressure >> PressureMsg) ]
-        [ text "click here to measure pressure" ]
+        [ myOnDown (.tangentialPressure >> TangentialPressureMsg) ]
+        [ text "Use pen here to measure tangentialPressure" ]
 
     myOnDown : (MyPointerEvent -> msg) -> Html.Attribute msg
     myOnDown tag =
@@ -312,13 +304,12 @@ And use it like as follows:
         }
 
 BEWARE that the minimalist [elm-pep] polyfill may not support
-this property. So if you rely on it for compatibility with browsers
+all properties. So if you rely on it for compatibility with browsers
 not supporting pointer events, a decoder with an unsupported attribute
 will silently fail.
 If such a need arises, please open an issue in [elm-pep].
 
-[Mouse-Event]: http://package.elm-lang.org/packages/mpizenberg/elm-mouse-events/latest/Mouse#Event
-[pressure]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure
+[tangentialPressure]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tangentialPressure
 [elm-pep]: https://github.com/mpizenberg/elm-pep
 
 -}
