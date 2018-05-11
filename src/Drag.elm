@@ -183,16 +183,25 @@ onEnd =
 
 {-| Personalize your drag events with chosen html options.
 -}
-onWithOptions : String -> Html.Events.Options -> (Event -> msg) -> Html.Attribute msg
+onWithOptions : String -> EventOptions -> (Event -> msg) -> Html.Attribute msg
 onWithOptions event options tag =
-    Decode.map tag eventDecoder
-        |> Html.Events.onWithOptions event options
+    eventDecoder
+        |> Decode.map (\ev -> { message = tag ev, stopPropagation = options.stopPropagation, preventDefault = options.preventDefault })
+        |> Html.Events.custom event
 
 
-stopOptions : Html.Events.Options
+stopOptions : EventOptions
 stopOptions =
-    { preventDefault = True
-    , stopPropagation = True
+    { stopPropagation = True
+    , preventDefault = True
+    }
+
+
+{-| Options for the event.
+-}
+type alias EventOptions =
+    { stopPropagation : Bool
+    , preventDefault : Bool
     }
 
 

@@ -1,13 +1,14 @@
 module Main exposing (..)
 
+import Browser
 import Html exposing (..)
 import Wheel
 
 
-main : Program Never WheelEvent WheelEvent
+main : Program () WheelEvent WheelEvent
 main =
-    beginnerProgram
-        { model = None
+    Browser.sandbox
+        { init = None
         , view = view
         , update = \event _ -> event
         }
@@ -22,4 +23,4 @@ view : WheelEvent -> Html WheelEvent
 view event =
     div
         [ Wheel.onWheel Wheel ]
-        [ text <| toString event ]
+        [ text <| Debug.toString event ]

@@ -56,6 +56,7 @@ import Internal.Decode
 import Json.Decode as Decode exposing (Decoder)
 
 
+
 -- MOUSE EVENT #######################################################
 
 
@@ -261,7 +262,6 @@ onContextMenu =
 
 
 {-| Choose the mouse event to listen to, and specify the event options.
-The `Options` type here is the standard [`Html.Events.Options`][html-options] type.
 If for some reason the default behavior of this package
 (stop propagation and prevent default) does not fit your needs,
 you can change it with for example:
@@ -271,19 +271,26 @@ you can change it with for example:
         { stopPropagation = False, preventDefault = True }
             |> Mouse.onWithOptions "mousedown"
 
-[html-options]: http://package.elm-lang.org/packages/elm-lang/html/2.0.0/Html-Events#Options
-
 -}
-onWithOptions : String -> Events.Options -> (Event -> msg) -> Attribute msg
+onWithOptions : String -> EventOptions -> (Event -> msg) -> Attribute msg
 onWithOptions event options tag =
-    Decode.map tag eventDecoder
-        |> Events.onWithOptions event options
+    eventDecoder
+        |> Decode.map (\ev -> { message = tag ev, stopPropagation = options.stopPropagation, preventDefault = options.preventDefault })
+        |> Events.custom event
 
 
-stopOptions : Events.Options
+stopOptions : EventOptions
 stopOptions =
     { stopPropagation = True
     , preventDefault = True
+    }
+
+
+{-| Options for the event.
+-}
+type alias EventOptions =
+    { stopPropagation : Bool
+    , preventDefault : Bool
     }
 
 
@@ -310,7 +317,7 @@ you could do:
 
     movementDecoder : Decoder ( Float, Float )
     movementDecoder =
-        Decode.map2 (,)
+        Decode.map2 (\a b -> ( a, b ))
             (Decode.field "movementX" Decode.float)
             (Decode.field "movementY" Decode.float)
 

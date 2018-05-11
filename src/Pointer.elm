@@ -37,6 +37,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Mouse
 
 
+
 -- MODEL #############################################################
 
 
@@ -235,7 +236,6 @@ onLeave =
 
 {-| Choose the pointer event to listen to, and specify the event options.
 
-The `Options` type here is the standard [`Html.Events.Options`][html-options] type.
 If for some reason the default behavior of this lib
 (stop propagation and prevent default) does not fit your needs,
 you can change it with for example:
@@ -245,19 +245,26 @@ you can change it with for example:
         { stopPropagation = False, preventDefault = True }
             |> Pointer.onWithOptions "pointerdown"
 
-[html-options]: http://package.elm-lang.org/packages/elm-lang/html/2.0.0/Html-Events#Options
-
 -}
-onWithOptions : String -> Html.Events.Options -> (Event -> msg) -> Html.Attribute msg
+onWithOptions : String -> EventOptions -> (Event -> msg) -> Html.Attribute msg
 onWithOptions event options tag =
-    Decode.map tag eventDecoder
-        |> Html.Events.onWithOptions event options
+    eventDecoder
+        |> Decode.map (\ev -> { message = tag ev, stopPropagation = options.stopPropagation, preventDefault = options.preventDefault })
+        |> Html.Events.custom event
 
 
-stopOptions : Html.Events.Options
+stopOptions : EventOptions
 stopOptions =
     { stopPropagation = True
     , preventDefault = True
+    }
+
+
+{-| Options for the event.
+-}
+type alias EventOptions =
+    { stopPropagation : Bool
+    , preventDefault : Bool
     }
 
 

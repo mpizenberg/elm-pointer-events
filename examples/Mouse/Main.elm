@@ -1,15 +1,16 @@
 module Main exposing (..)
 
+import Browser
 import Html exposing (..)
 import Mouse
 
 
-main : Program Never MouseEvent MouseEvent
+main : Program () MouseEvent MouseEvent
 main =
-    beginnerProgram
-        { model = None
+    Browser.sandbox
+        { init = None
         , view = view
-        , update = \newEvent _ -> newEvent
+        , update = \event _ -> event
         }
 
 
@@ -38,5 +39,5 @@ view event =
             , Mouse.onOut Out
             , Mouse.onContextMenu ContextMenu
             ]
-            [ text <| toString event ]
+            [ text <| Debug.toString event ]
         ]

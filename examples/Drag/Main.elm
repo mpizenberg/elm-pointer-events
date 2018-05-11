@@ -1,15 +1,16 @@
 module Main exposing (..)
 
+import Browser
 import Drag
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Mouse
 
 
-main : Program Never DragEvent DragEvent
+main : Program () DragEvent DragEvent
 main =
-    beginnerProgram
-        { model = None
+    Browser.sandbox
+        { init = None
         , view = view
         , update = \event _ -> event
         }
@@ -47,7 +48,7 @@ view event =
             , Drag.onDrop (Drop << withoutRawData)
             , Drag.onLeave (always Leave)
             ]
-            [ text <| toString event ]
+            [ text <| Debug.toString event ]
         ]
 
 

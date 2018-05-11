@@ -1,14 +1,15 @@
 module Main exposing (..)
 
+import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Touch
 
 
-main : Program Never TouchEvent TouchEvent
+main : Program () TouchEvent TouchEvent
 main =
-    beginnerProgram
-        { model = None
+    Browser.sandbox
+        { init = None
         , view = view
         , update = \event _ -> event
         }
@@ -31,6 +32,6 @@ view event =
         , Touch.onCancel Cancel
 
         -- no touch-action
-        , style [ ( "touch-action", "none" ) ]
+        , style "touch-action" "none"
         ]
-        [ text <| toString event ]
+        [ text <| Debug.toString event ]

@@ -24,7 +24,7 @@ dynamicListOf itemDecoder =
                 |> all
 
         decodeOne n =
-            Decode.field (toString n) itemDecoder
+            Decode.field (String.fromInt n) itemDecoder
     in
     Decode.field "length" Decode.int
         |> Decode.andThen decodeN
@@ -45,27 +45,27 @@ keys =
 
 clientPos : Decoder ( Float, Float )
 clientPos =
-    Decode.map2 (,)
+    Decode.map2 (\a b -> ( a, b ))
         (Decode.field "clientX" Decode.float)
         (Decode.field "clientY" Decode.float)
 
 
 offsetPos : Decoder ( Float, Float )
 offsetPos =
-    Decode.map2 (,)
+    Decode.map2 (\a b -> ( a, b ))
         (Decode.field "offsetX" Decode.float)
         (Decode.field "offsetY" Decode.float)
 
 
 pagePos : Decoder ( Float, Float )
 pagePos =
-    Decode.map2 (,)
+    Decode.map2 (\a b -> ( a, b ))
         (Decode.field "pageX" Decode.float)
         (Decode.field "pageY" Decode.float)
 
 
 screenPos : Decoder ( Float, Float )
 screenPos =
-    Decode.map2 (,)
+    Decode.map2 (\a b -> ( a, b ))
         (Decode.field "screenX" Decode.float)
         (Decode.field "screenY" Decode.float)

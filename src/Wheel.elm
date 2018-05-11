@@ -90,7 +90,6 @@ onWheel =
 
 {-| Enable personalization of html events options (prevent default and stop propagation)
 in case the default options do not fit your needs.
-The `Options` type here is the standard [`Html.Events.Options`][html-options] type.
 You can change options like follows:
 
     onWheel : (Wheel.Event -> msg) -> Html.Attribute msg
@@ -98,19 +97,26 @@ You can change options like follows:
         { stopPropagation = False, preventDefault = True }
             |> Wheel.onWithOptions
 
-[html-options]: http://package.elm-lang.org/packages/elm-lang/html/2.0.0/Html-Events#Options
-
 -}
-onWithOptions : Html.Events.Options -> (Event -> msg) -> Html.Attribute msg
+onWithOptions : EventOptions -> (Event -> msg) -> Html.Attribute msg
 onWithOptions options tag =
-    Decode.map tag eventDecoder
-        |> Html.Events.onWithOptions "wheel" options
+    eventDecoder
+        |> Decode.map (\ev -> { message = tag ev, stopPropagation = options.stopPropagation, preventDefault = options.preventDefault })
+        |> Html.Events.custom "wheel"
 
 
-stopOptions : Html.Events.Options
+stopOptions : EventOptions
 stopOptions =
     { stopPropagation = True
     , preventDefault = True
+    }
+
+
+{-| Options for the event.
+-}
+type alias EventOptions =
+    { stopPropagation : Bool
+    , preventDefault : Bool
     }
 
 

@@ -1,14 +1,15 @@
 module Main exposing (..)
 
+import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Pointer
 
 
-main : Program Never PointerEvent PointerEvent
+main : Program () PointerEvent PointerEvent
 main =
-    beginnerProgram
-        { model = None
+    Browser.sandbox
+        { init = None
         , view = view
         , update = \event _ -> event
         }
@@ -30,10 +31,10 @@ view event =
             , Pointer.onUp Up
 
             -- no touch-action (prevents scrolling and co.)
-            , style [ ( "touch-action", "none" ) ]
+            , style "touch-action" "none"
 
             -- pointer capture hack to continue "globally" the event anywhere on document.
             , attribute "onpointerdown" "event.target.setPointerCapture(event.pointerId);"
             ]
-            [ text <| toString event ]
+            [ text <| Debug.toString event ]
         ]

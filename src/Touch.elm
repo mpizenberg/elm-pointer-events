@@ -175,7 +175,6 @@ onCancel =
 
 
 {-| Personalize the html event options.
-The `Options` type here is the standard [`Html.Events.Options`][html-options] type.
 If for some reason the default behavior of this package (stop propagation and prevent default)
 does not fit your needs, you can change it like follows:
 
@@ -184,19 +183,26 @@ does not fit your needs, you can change it like follows:
         { stopPropagation = False, preventDefault = True }
             |> Touch.onWithOptions "touchstart"
 
-[html-options]: http://package.elm-lang.org/packages/elm-lang/html/2.0.0/Html-Events#Options
-
 -}
-onWithOptions : String -> Html.Events.Options -> (Event -> msg) -> Html.Attribute msg
+onWithOptions : String -> EventOptions -> (Event -> msg) -> Html.Attribute msg
 onWithOptions event options tag =
-    Decode.map tag eventDecoder
-        |> Html.Events.onWithOptions event options
+    eventDecoder
+        |> Decode.map (\ev -> { message = tag ev, stopPropagation = options.stopPropagation, preventDefault = options.preventDefault })
+        |> Html.Events.custom event
 
 
-stopOptions : Html.Events.Options
+stopOptions : EventOptions
 stopOptions =
-    { preventDefault = True
-    , stopPropagation = True
+    { stopPropagation = True
+    , preventDefault = True
+    }
+
+
+{-| Options for the event.
+-}
+type alias EventOptions =
+    { stopPropagation : Bool
+    , preventDefault : Bool
     }
 
 
