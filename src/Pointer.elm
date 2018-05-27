@@ -1,7 +1,7 @@
 module Pointer
     exposing
         ( ContactDetails
-        , DeviceType
+        , DeviceType(..)
         , Event
         , eventDecoder
         , onCancel
