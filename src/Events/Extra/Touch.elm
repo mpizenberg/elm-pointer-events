@@ -3,7 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Touch
+module Events.Extra.Touch
     exposing
         ( Event
         , Keys

@@ -1,4 +1,4 @@
-module Mouse
+module Events.Extra.Mouse
     exposing
         ( Button(..)
         , Event

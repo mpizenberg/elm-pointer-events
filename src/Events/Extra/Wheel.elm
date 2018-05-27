@@ -3,7 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Wheel
+module Events.Extra.Wheel
     exposing
         ( DeltaMode(..)
         , Event
@@ -28,10 +28,10 @@ module Wheel
 
 -}
 
+import Events.Extra.Mouse as Mouse
 import Html
 import Html.Events
 import Json.Decode as Decode exposing (Decoder)
-import Mouse
 
 
 {-| Type that get returned by a browser wheel event.

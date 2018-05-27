@@ -1,4 +1,4 @@
-module Pointer
+module Events.Extra.Pointer
     exposing
         ( ContactDetails
         , DeviceType(..)
@@ -31,10 +31,10 @@ module Pointer
 
 -}
 
+import Events.Extra.Mouse as Mouse
 import Html
 import Html.Events
 import Json.Decode as Decode exposing (Decoder)
-import Mouse
 
 
 

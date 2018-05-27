@@ -1,4 +1,4 @@
-module Drag
+module Events.Extra.Drag
     exposing
         ( DataTransfer
         , Event
@@ -46,11 +46,11 @@ that cannot be done directly using the `Value`.
 
 -}
 
+import Events.Extra.Mouse as Mouse
 import Html
 import Html.Events
 import Internal.Decode
 import Json.Decode as Decode exposing (Decoder)
-import Mouse
 
 
 {-| Type that get returned by a browser drag event.
