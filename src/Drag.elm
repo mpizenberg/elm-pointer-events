@@ -111,7 +111,7 @@ in the form of a `Json.Decode.Value`.
 This corresponds to a JavaScript [`File`][jsFile]
 
   - `name`: name of the file, without the path for security reasons
-  - `typeMIME`: [MIME] type of the file
+  - `mimeType`: [MIME] type of the file
   - `size`: size of the file in bytes
 
 _Remark: providing these properties as attributes in an elm record
@@ -126,7 +126,7 @@ this would be changed to the supported version._
 type alias File =
     -- no support of lastModified in Safari
     { name : String
-    , typeMIME : String
+    , mimeType : String
     , size : Int
     , data : Decode.Value
     }
