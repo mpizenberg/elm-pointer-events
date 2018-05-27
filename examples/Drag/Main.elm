@@ -1,24 +1,29 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Browser
-import Drag
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Mouse
+import Events.Extra.Drag as Drag
+import Events.Extra.Mouse as Mouse
+import Html exposing (Attribute, Html, div, p, text)
+import Html.Events
+import Json.Decode as Decode exposing (Decoder, Value)
 
 
-main : Program () DragEvent DragEvent
+main : Program () Model Msg
 main =
-    Browser.sandbox
-        { init = None
+    Browser.embed
+        { init = always ( Nothing, Cmd.none )
         , view = view
-        , update = \event _ -> event
+        , update = update
+        , subscriptions = always Sub.none
         }
 
 
+type alias Model =
+    Maybe DragEvent
+
+
 type DragEvent
-    = None
-    | Over WithoutRawData
+    = Over WithoutRawData
     | Leave
     | Drop WithoutRawData
 
@@ -31,25 +36,63 @@ type alias WithoutRawData =
 
 type alias MetaData =
     { name : String
-    , typeMIME : String
+    , mimeType : String
     , size : Int
     }
 
 
-view : DragEvent -> Html DragEvent
-view event =
+
+-- Update
+
+
+type Msg
+    = DragEventMsg DragEvent
+    | PortEventMsg String Value
+
+
+type alias PortEvent =
+    { name : String
+    , value : Value
+    }
+
+
+port portEvent : PortEvent -> Cmd msg
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        DragEventMsg event ->
+            ( Just event, Cmd.none )
+
+        PortEventMsg event value ->
+            ( model, portEvent { name = event, value = value } )
+
+
+
+-- View
+
+
+view : Model -> Html Msg
+view model =
     div
         -- Prevent any kind of drop outside of dropable area.
-        -- It changes the cursor and prevent the drop event from happening
-        [ attribute "ondragover" "event.dataTransfer.dropEffect = 'none'; event.preventDefault();" ]
+        -- It is doing inside a port: event.dataTransfer.dropEffect = 'none'
+        -- to change the cursor and prevent the drop event from happening.
+        [ portEventDecoderOn "dragover" ]
         [ p
-            -- Dropable area
-            [ Drag.onOver (Over << withoutRawData)
-            , Drag.onDrop (Drop << withoutRawData)
-            , Drag.onLeave (always Leave)
+            -- Dropable area (grayed in css)
+            [ Drag.onOver (DragEventMsg << Over << withoutRawData)
+            , Drag.onDrop (DragEventMsg << Drop << withoutRawData)
+            , Drag.onLeave (always <| DragEventMsg Leave)
             ]
-            [ text <| Debug.toString event ]
+            [ text <| Debug.toString model ]
         ]
+
+
+portEventDecoderOn : String -> Attribute Msg
+portEventDecoderOn event =
+    Html.Events.preventDefaultOn event (Decode.map (\v -> ( PortEventMsg event v, True )) Decode.value)
 
 
 withoutRawData : Drag.Event -> WithoutRawData
@@ -62,6 +105,6 @@ withoutRawData event =
 extractMetadata : Drag.File -> MetaData
 extractMetadata file =
     { name = file.name
-    , typeMIME = file.typeMIME
+    , mimeType = file.mimeType
     , size = file.size
     }
