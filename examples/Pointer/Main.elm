@@ -1,40 +1,70 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Browser
+import Events.Extra.Pointer as Pointer
 import Html exposing (..)
-import Html.Attributes exposing (..)
-import Pointer
+import Html.Events
+import Json.Decode as Decode exposing (Decoder, Value)
+import Json.Encode as Encode
 
 
-main : Program () PointerEvent PointerEvent
+main : Program () Model Msg
 main =
-    Browser.sandbox
-        { init = None
+    Browser.embed
+        { init = always ( Nothing, Cmd.none )
         , view = view
-        , update = \event _ -> event
+        , update = update
+        , subscriptions = always Sub.none
         }
 
 
-type PointerEvent
-    = None
-    | Down Pointer.Event
+type alias Model =
+    Maybe Event
+
+
+type Event
+    = Down Pointer.Event
     | Move Pointer.Event
     | Up Pointer.Event
 
 
-view : PointerEvent -> Html PointerEvent
-view event =
+type Msg
+    = EventMsg Event
+    | RawDownMsg Value
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg _ =
+    case msg of
+        EventMsg event ->
+            ( Just event, Cmd.none )
+
+        RawDownMsg value ->
+            ( Decode.decodeValue Pointer.eventDecoder value
+                |> Result.toMaybe
+                |> Maybe.map Down
+              -- use a port to "capture" pointer event
+              -- since it requires JS function calls
+            , capture value
+            )
+
+
+port capture : Value -> Cmd msg
+
+
+view : Model -> Html Msg
+view model =
     div []
         [ p
-            [ Pointer.onDown Down
-            , Pointer.onMove Move
-            , Pointer.onUp Up
-
-            -- no touch-action (prevents scrolling and co.)
-            , style "touch-action" "none"
-
-            -- pointer capture hack to continue "globally" the event anywhere on document.
-            , attribute "onpointerdown" "event.target.setPointerCapture(event.pointerId);"
+            [ Pointer.onUp (EventMsg << Up)
+            , Pointer.onMove (EventMsg << Move)
+            , msgOn "pointerdown" (Decode.map RawDownMsg Decode.value)
             ]
-            [ text <| Debug.toString event ]
+            [ text <| Debug.toString model ]
         ]
+
+
+msgOn : String -> Decoder msg -> Attribute msg
+msgOn event =
+    Decode.map (\msg -> { message = msg, stopPropagation = True, preventDefault = True })
+        >> Html.Events.custom event
