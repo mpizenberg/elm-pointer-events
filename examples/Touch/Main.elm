@@ -1,9 +1,9 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Touch
+import Events.Extra.Touch as Touch
+import Html exposing (Html, div, p, text)
+import Html.Attributes exposing (style)
 
 
 main : Program () TouchEvent TouchEvent
@@ -11,7 +11,7 @@ main =
     Browser.sandbox
         { init = None
         , view = view
-        , update = \event _ -> event
+        , update = always
         }
 
 
@@ -25,13 +25,15 @@ type TouchEvent
 
 view : TouchEvent -> Html TouchEvent
 view event =
-    div
-        [ Touch.onStart Start
-        , Touch.onMove Move
-        , Touch.onEnd End
-        , Touch.onCancel Cancel
+    div []
+        [ p
+            [ Touch.onStart Start
+            , Touch.onMove Move
+            , Touch.onEnd End
+            , Touch.onCancel Cancel
 
-        -- no touch-action
-        , style "touch-action" "none"
+            -- no touch-action
+            , style "touch-action" "none"
+            ]
+            [ text <| Debug.toString event ]
         ]
-        [ text <| Debug.toString event ]
