@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser
+import Events.Extra.Mouse as Mouse
 import Html exposing (..)
-import Mouse
 
 
 main : Program () MouseEvent MouseEvent
@@ -10,7 +10,7 @@ main =
     Browser.sandbox
         { init = None
         , view = view
-        , update = \event _ -> event
+        , update = always
         }
 
 
