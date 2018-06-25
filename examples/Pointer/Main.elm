@@ -10,7 +10,7 @@ import Json.Encode as Encode
 
 main : Program () Model Msg
 main =
-    Browser.embed
+    Browser.element
         { init = always ( Nothing, Cmd.none )
         , view = view
         , update = update

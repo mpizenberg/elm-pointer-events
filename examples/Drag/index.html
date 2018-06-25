@@ -10,14 +10,16 @@
 		p {background: lightgray; width: 60%; height: 60%;}
 	</style>
 	<script src="Main.js"></script>
-	<script src="elm-pep.js"></script>
 </head>
 <body>
 	<div id="elm"></div>
-	<script charset="utf-8">const app = Elm.Main.embed(document.getElementById("elm"))</script>
 	<script charset="utf-8">
+		const app = Elm.Main.init({
+			node: document.getElementById("elm")
+		})
 		app.ports.portEvent.subscribe( event => {
 			if (event.name === "dragover") {
+				console.log(event)
 				event.value.dataTransfer.dropEffect = 'none'
 				event.value.preventDefault()
 			}
