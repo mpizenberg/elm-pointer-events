@@ -22,13 +22,13 @@ main =
 
 type Msg
     = NoOp
-    | PortMsg String Value
+    | PortMsg Value
 
 
 update : Msg -> () -> ( (), Cmd Msg )
 update msg () =
     case msg of
-        PortMsg eventName value ->
+        PortMsg value ->
             ( (), valuePort value )
 
         _ ->
@@ -44,7 +44,7 @@ port valuePort : Value -> Cmd msg
 
 view : () -> Html Msg
 view () =
-    div [ valueOn "dragover" (PortMsg "dragover") ]
+    div [ valueOn "dragover" PortMsg ]
         [ p [ discard "dragleave" ] [] ]
 
 
