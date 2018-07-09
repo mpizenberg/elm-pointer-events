@@ -65,8 +65,8 @@ update msg model =
         DragEventMsg event ->
             ( Just event, Cmd.none )
 
-        PortEventMsg event value ->
-            ( model, portEvent { name = event, value = value } )
+        PortEventMsg eventName value ->
+            ( model, portEvent { name = eventName, value = value } )
 
 
 
