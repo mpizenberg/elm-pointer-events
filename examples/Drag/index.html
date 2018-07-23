@@ -17,8 +17,7 @@
 		const app = Elm.Main.init({
 			node: document.getElementById("elm")
 		})
-		app.ports.valuePort.subscribe( event => {
-			// console.log(event)
+		document.addEventListener( "dragover", event => {
 			event.dataTransfer.dropEffect = 'none'
 			event.preventDefault()
 		})

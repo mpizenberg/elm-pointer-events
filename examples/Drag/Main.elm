@@ -1,11 +1,9 @@
-port module Main exposing (..)
+module Main exposing (..)
 
 import Browser
 import Events.Extra.Drag as Drag
 import Events.Extra.Mouse as Mouse
 import Html exposing (Attribute, Html, div, p, text)
-import Html.Events
-import Json.Decode as Decode exposing (Decoder, Value)
 
 
 main : Program () Model Msg
@@ -47,16 +45,6 @@ type alias MetaData =
 
 type Msg
     = DragEventMsg DragEvent
-    | PortEventMsg String Value
-
-
-type alias PortEvent =
-    { name : String
-    , value : Value
-    }
-
-
-port portEvent : PortEvent -> Cmd msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -65,9 +53,6 @@ update msg model =
         DragEventMsg event ->
             ( Just event, Cmd.none )
 
-        PortEventMsg eventName value ->
-            ( model, portEvent { name = eventName, value = value } )
-
 
 
 -- View
@@ -75,11 +60,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div
-        -- Prevent any kind of drop outside of dropable area.
-        -- It is doing inside a port: event.dataTransfer.dropEffect = 'none'
-        -- to change the cursor and prevent the drop event from happening.
-        [ portEventDecoderOn "dragover" ]
+    div []
         [ p
             -- Dropable area (grayed in css)
             [ Drag.onOver (DragEventMsg << Over << withoutRawData)
@@ -88,11 +69,6 @@ view model =
             ]
             [ text <| Debug.toString model ]
         ]
-
-
-portEventDecoderOn : String -> Attribute Msg
-portEventDecoderOn event =
-    Html.Events.preventDefaultOn event (Decode.map (\v -> ( PortEventMsg event v, True )) Decode.value)
 
 
 withoutRawData : Drag.Event -> WithoutRawData
