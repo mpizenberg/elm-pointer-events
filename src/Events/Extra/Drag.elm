@@ -6,41 +6,70 @@
 module Events.Extra.Drag
     exposing
         ( DataTransfer
+        , DraggedSourceConfig
+        , DropEffect
+        , DropTargetConfig
+        , EffectAllowed
         , Event
         , File
+        , FileDropConfig
         , dataTransferDecoder
         , eventDecoder
         , fileDecoder
         , fileListDecoder
-          -- , onDrag
-          -- , onDrop
-          -- , onEnd
-          -- , onEnter
-          -- , onLeave
-          -- , onOver
-          -- , onStart
+        , onDropTarget
+        , onFileFromOS
+        , onSourceDrag
         )
 
-{-| Handling drag events.
-Due to the limitation of not being able to call JavaScript functions
-directly in elm, full drag and drop API cannot be supported.
+{-| [Html5 drag events][dragevent] is a quite complicated specification.
+Mostly because it is very stateful, and many properties and functions
+only make sense in one situation and not the rest.
+For example, the `effectAllowed` property can only be set successfully
+in a `dragstart` event, and setting it in another will be ignored.
+Another example, the `dragend` should be attached to the object dragged,
+while the `dragleave` should be attached to potential drop target.
 
-However, most of the time we just need to be able to drop some files
-from the file system to the web page.
-By providing the `dragover`, and `drop` events,
-this module enables such use case.
-Of course, the file retrieved in the form of a
-`Json.Decode.Value` would still have to be
-sent through ports if further processing is needed
-that cannot be done directly using the `Value`.
+Consequently, I've chosen to present a slightly opinionated API for drag events.
+In case it prevents you from using it, please report your use case in
+[an issue][issues]. I hope by also providing the decoders,
+the library can still help you setup your own event listeners.
+
+There seems to be two main use cases for drag events:
+
+1.  Dropping files from the OS as resources to load.
+2.  Drag and dropping DOM elements in page.
+
+The rest of the documentation presents the API with those use cases in mind.
+
+[dragevent]: https://developer.mozilla.org/en-US/docs/Web/API/DragEvent
+[issues]: https://github.com/mpizenberg/elm-pointer-events/issues
+
+
+# The Event Type
 
 @docs Event, DataTransfer, File
 
 
-# Drag Events
+# File Dropping
+
+@docs onFileFromOS, FileDropConfig
 
 
-# Advanced Usage
+# Drag and Drop
+
+
+## Managing the dragged item
+
+@docs onSourceDrag, DraggedSourceConfig, EffectAllowed
+
+
+## Managing a drop target
+
+@docs onDropTarget, DropTargetConfig, DropEffect
+
+
+# Decoders for Advanced Usage
 
 @docs eventDecoder, dataTransferDecoder, fileListDecoder, fileDecoder
 
@@ -134,17 +163,7 @@ type alias File =
 
 
 
--- EVENTS ############################################################
-
-
-{-| Configuration of a file drop target.
--}
-type alias FileDropConfig msg =
-    { onOver : Event -> msg
-    , onDrop : Event -> msg
-    , onEnter : Maybe (Event -> msg)
-    , onLeave : Maybe (Event -> msg)
-    }
+-- FILE DROPPING #####################################################
 
 
 {-| Events listeners for a file drop target element.
@@ -159,6 +178,67 @@ onFileFromOS : FileDropConfig msg -> List (Html.Attribute msg)
 onFileFromOS config =
     List.filterMap identity <|
         [ Just (on "dragover" config.onOver)
+        , Just (on "drop" config.onDrop)
+        , Maybe.map (on "dragenter") config.onEnter
+        , Maybe.map (on "dragleave") config.onLeave
+        ]
+
+
+{-| Configuration of a file drop target.
+-}
+type alias FileDropConfig msg =
+    { onOver : Event -> msg
+    , onDrop : Event -> msg
+    , onEnter : Maybe (Event -> msg)
+    , onLeave : Maybe (Event -> msg)
+    }
+
+
+
+-- DRAG AND DROP #####################################################
+
+
+{-| Drag events listeners for the source dragged element.
+-}
+onSourceDrag : DraggedSourceConfig msg -> List (Html.Attribute msg)
+onSourceDrag config =
+    List.filterMap identity <|
+        [ Just (Html.Attributes.draggable "true")
+        , Just (valueOn "dragstart" (config.onStart config.effectAllowed))
+        , Just (on "dragend" config.onEnd)
+        , Maybe.map (on "drag") config.onDrag
+        ]
+
+
+{-| Configuration of a draggable element.
+You should provide message taggers for `dragstart` and `dragend` events.
+You can (but it is more compute-intensive) provide a message tagger for `drag` events.
+-}
+type alias DraggedSourceConfig msg =
+    { effectAllowed : EffectAllowed
+    , onStart : EffectAllowed -> Value -> msg
+    , onEnd : Event -> msg
+    , onDrag : Maybe (Event -> msg)
+    }
+
+
+{-| Drop effects allowed for this draggable element.
+Set to `True` all effects allowed.
+This is used in the port of the `dragstart` event.
+-}
+type alias EffectAllowed =
+    { move : Bool
+    , copy : Bool
+    , link : Bool
+    }
+
+
+{-| Drag events listeners for the drop target element.
+-}
+onDropTarget : DropTargetConfig msg -> List (Html.Attribute msg)
+onDropTarget config =
+    List.filterMap identity <|
+        [ Just (valueOn "dragover" (config.onOver config.dropEffect))
         , Just (on "drop" config.onDrop)
         , Maybe.map (on "dragenter") config.onEnter
         , Maybe.map (on "dragleave") config.onLeave
@@ -193,51 +273,8 @@ type DropEffect
     | LinkOnDrop
 
 
-{-| Drag events listeners for the drop target element.
--}
-onDropTarget : DropTargetConfig msg -> List (Html.Attribute msg)
-onDropTarget config =
-    List.filterMap identity <|
-        [ Just (valueOn "dragover" (config.onOver config.dropEffect))
-        , Just (on "drop" config.onDrop)
-        , Maybe.map (on "dragenter") config.onEnter
-        , Maybe.map (on "dragleave") config.onLeave
-        ]
 
-
-{-| Configuration of a draggable element.
-You should provide message taggers for `dragstart` and `dragend` events.
-You can (but it is more compute-intensive) provide a message tagger for `drag` events.
--}
-type alias DraggedSourceConfig msg =
-    { effectAllowed : EffectAllowed
-    , onStart : EffectAllowed -> Value -> msg
-    , onEnd : Event -> msg
-    , onDrag : Maybe (Event -> msg)
-    }
-
-
-{-| Drop effects allowed for this draggable element.
-Set to `True` all effects allowed.
-This is used in the port of the `dragstart` event.
--}
-type alias EffectAllowed =
-    { move : Bool
-    , copy : Bool
-    , link : Bool
-    }
-
-
-{-| Drag events listeners for the source dragged element.
--}
-onSourceDrag : DraggedSourceConfig msg -> List (Html.Attribute msg)
-onSourceDrag config =
-    List.filterMap identity <|
-        [ Just (Html.Attributes.draggable "true")
-        , Just (valueOn "dragstart" (config.onStart config.effectAllowed))
-        , Just (on "dragend" config.onEnd)
-        , Maybe.map (on "drag") config.onDrag
-        ]
+-- EVENTS LISTENERS ##################################################
 
 
 valueOn : String -> (Value -> msg) -> Html.Attribute msg

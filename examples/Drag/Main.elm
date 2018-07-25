@@ -3,27 +3,24 @@ module Main exposing (..)
 import Browser
 import Events.Extra.Drag as Drag
 import Events.Extra.Mouse as Mouse
-import Html exposing (Attribute, Html, div, p, text)
+import Html exposing (Html, div, p, text)
 
 
-main : Program () Model Msg
+main : Program () DragEvent DragEvent
 main =
-    Browser.element
-        { init = always ( Nothing, Cmd.none )
+    Browser.sandbox
+        { init = None
         , view = view
-        , update = update
-        , subscriptions = always Sub.none
+        , update = \event _ -> event
         }
 
 
-type alias Model =
-    Maybe DragEvent
-
-
 type DragEvent
-    = Over WithoutRawData
-    | Leave
+    = None
+    | Over WithoutRawData
     | Drop WithoutRawData
+    | Enter WithoutRawData
+    | Leave WithoutRawData
 
 
 type alias WithoutRawData =
@@ -40,35 +37,23 @@ type alias MetaData =
 
 
 
--- Update
-
-
-type Msg
-    = DragEventMsg DragEvent
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        DragEventMsg event ->
-            ( Just event, Cmd.none )
-
-
-
 -- View
 
 
-view : Model -> Html Msg
+view : DragEvent -> Html DragEvent
 view model =
     div []
-        [ p
-            -- Dropable area (grayed in css)
-            [ Drag.onOver (DragEventMsg << Over << withoutRawData)
-            , Drag.onDrop (DragEventMsg << Drop << withoutRawData)
-            , Drag.onLeave (always <| DragEventMsg Leave)
-            ]
-            [ text <| Debug.toString model ]
-        ]
+        -- Dropable area (grayed in css)
+        [ p (Drag.onFileFromOS fileDropConfig) [ text <| Debug.toString model ] ]
+
+
+fileDropConfig : Drag.FileDropConfig DragEvent
+fileDropConfig =
+    { onOver = Over << withoutRawData
+    , onDrop = Drop << withoutRawData
+    , onEnter = Just (Enter << withoutRawData)
+    , onLeave = Just (Leave << withoutRawData)
+    }
 
 
 withoutRawData : Drag.Event -> WithoutRawData
