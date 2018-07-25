@@ -22,15 +22,18 @@ module Events.Extra.Drag
         , onSourceDrag
         )
 
-{-| [Html5 drag events][dragevent] is a quite complicated specification.
+{-| [HTML5 drag events][dragevent] is a quite complicated specification.
 Mostly because it is very stateful, and many properties and functions
 only make sense in one situation and not the rest.
 For example, the `effectAllowed` property can only be set successfully
 in a `dragstart` event, and setting it in another will be ignored.
 Another example, the `dragend` should be attached to the object dragged,
 while the `dragleave` should be attached to potential drop target.
+One more, the `dragover` event listener is required on a drop target.
+Otherwise the drop event will be cancelled.
 
-Consequently, I've chosen to present a slightly opinionated API for drag events.
+Consequently, I've chosen to present a slightly opinionated API for drag events,
+mitigating most of potential errors.
 In case it prevents you from using it, please report your use case in
 [an issue][issues]. I hope by also providing the decoders,
 the library can still help you setup your own event listeners.
@@ -58,13 +61,18 @@ The rest of the documentation presents the API with those use cases in mind.
 
 # Drag and Drop
 
+I encourage you to read [this blog post][disaster] before you take the decision
+to use HTML5 drag and drop API instead of your own custom solution.
 
-## Managing the dragged item
+[disaster]: https://www.quirksmode.org/blog/archives/2009/09/the_html5_drag.html
+
+
+## Managing the Dragged Item
 
 @docs onSourceDrag, DraggedSourceConfig, EffectAllowed
 
 
-## Managing a drop target
+## Managing a Drop Target
 
 @docs onDropTarget, DropTargetConfig, DropEffect
 
@@ -185,6 +193,12 @@ onFileFromOS config =
 
 
 {-| Configuration of a file drop target.
+
+PS: `dragenter` and `dragleave` are kind of inconsistent since they
+bubble up from children items (not consistently depending on borders in addition).
+You should prefer to let them be `Nothing`, or to add the CSS property
+`pointer-events: none` to all children.
+
 -}
 type alias FileDropConfig msg =
     { onOver : Event -> msg
@@ -234,6 +248,12 @@ type alias EffectAllowed =
 
 
 {-| Drag events listeners for the drop target element.
+
+PS: `dragenter` and `dragleave` are kind of inconsistent since they
+bubble up from children items (not consistently depending on borders in addition).
+You should prefer to let them be `Nothing`, or to add the CSS property
+`pointer-events: none` to all children.
+
 -}
 onDropTarget : DropTargetConfig msg -> List (Html.Attribute msg)
 onDropTarget config =
