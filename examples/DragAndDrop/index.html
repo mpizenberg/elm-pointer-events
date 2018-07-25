@@ -24,6 +24,13 @@
 			event.dataTransfer.dropEffect = 'none'
 			event.preventDefault()
 		})
+		app.ports.dragstart.subscribe( data => {
+			data.event.dataTransfer.setData('text/plain', '') // needed
+			data.event.dataTransfer.effectAllowed = data.effectAllowed
+		})
+		app.ports.dragover.subscribe( data => {
+			data.event.dataTransfer.dropEffect = data.dropEffect
+		})
 	</script>
 </body>
 </html>

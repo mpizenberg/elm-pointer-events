@@ -1,4 +1,4 @@
-port module Main exposing (..)
+module Main exposing (..)
 
 import Browser
 import Dict exposing (Dict)
@@ -7,6 +7,7 @@ import Html exposing (Html, div, h1, p, text)
 import Html.Attributes exposing (class, id)
 import Json.Decode as Decode exposing (Value)
 import List
+import Ports
 
 
 main : Program () Model Msg
@@ -69,15 +70,15 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case ( Debug.log "msg" msg, model.dragAndDropStatus ) of
-        ( DragStart id _ _, _ ) ->
-            ( { model | dragAndDropStatus = Dragging id }, Cmd.none )
+    case ( msg, model.dragAndDropStatus ) of
+        ( DragStart id effectAllowed value, _ ) ->
+            ( { model | dragAndDropStatus = Dragging id }, dragstartPort effectAllowed value )
 
         ( DragEnd, _ ) ->
             ( { model | dragAndDropStatus = NoDnD }, Cmd.none )
 
-        ( DragOver _ _, _ ) ->
-            ( model, Cmd.none )
+        ( DragOver dropEffect value, _ ) ->
+            ( model, dragoverPort dropEffect value )
 
         ( Drop status, Dragging id ) ->
             let
@@ -88,6 +89,16 @@ update msg model =
 
         _ ->
             ( model, Cmd.none )
+
+
+dragstartPort : Drag.EffectAllowed -> Value -> Cmd msg
+dragstartPort effectAllowed value =
+    Ports.dragstart { effectAllowed = Drag.effectAllowedToString effectAllowed, event = value }
+
+
+dragoverPort : Drag.DropEffect -> Value -> Cmd msg
+dragoverPort dropEffect value =
+    Ports.dragover { dropEffect = Drag.dropEffectToString dropEffect, event = value }
 
 
 maybeSetStatus : ProgressStatus -> Maybe Task -> Maybe Task
@@ -109,13 +120,13 @@ view model =
     div [ id "kanban" ]
         [ div
             (class "kanban-area" :: id "todo" :: Drag.onDropTarget (dropTargetConfig ToDo))
-            (h1 [] [ text "To Do" ] :: viewTasks ToDo model)
+            (h1 [] [ text "To Do" ] :: viewTasks ToDo model.tasks)
         , div
             (class "kanban-area" :: id "doing" :: Drag.onDropTarget (dropTargetConfig Doing))
-            (h1 [] [ text "Doing" ] :: viewTasks Doing model)
+            (h1 [] [ text "Doing" ] :: viewTasks Doing model.tasks)
         , div
             (class "kanban-area" :: id "done" :: Drag.onDropTarget (dropTargetConfig Done))
-            (h1 [] [ text "Done" ] :: viewTasks Done model)
+            (h1 [] [ text "Done" ] :: viewTasks Done model.tasks)
         ]
 
 
@@ -129,9 +140,9 @@ dropTargetConfig status =
     }
 
 
-viewTasks : ProgressStatus -> Model -> List (Html Msg)
-viewTasks status model =
-    model.tasks
+viewTasks : ProgressStatus -> Dict Int Task -> List (Html Msg)
+viewTasks status tasks =
+    tasks
         |> Dict.filter (\_ task -> progressStatus task == status)
         |> Dict.toList
         |> List.map viewOneTask

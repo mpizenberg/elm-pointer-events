@@ -14,6 +14,8 @@ module Events.Extra.Drag
         , File
         , FileDropConfig
         , dataTransferDecoder
+        , dropEffectToString
+        , effectAllowedToString
         , eventDecoder
         , fileDecoder
         , fileListDecoder
@@ -69,12 +71,12 @@ to use HTML5 drag and drop API instead of your own custom solution.
 
 ## Managing the Dragged Item
 
-@docs onSourceDrag, DraggedSourceConfig, EffectAllowed
+@docs onSourceDrag, DraggedSourceConfig, EffectAllowed, effectAllowedToString
 
 
 ## Managing a Drop Target
 
-@docs onDropTarget, DropTargetConfig, DropEffect
+@docs onDropTarget, DropTargetConfig, DropEffect, dropEffectToString
 
 
 # Decoders for Advanced Usage
@@ -247,6 +249,36 @@ type alias EffectAllowed =
     }
 
 
+{-| Convert `EffectAllowed` into its String equivalent.
+-}
+effectAllowedToString : EffectAllowed -> String
+effectAllowedToString eff =
+    case ( eff.move, eff.copy, eff.link ) of
+        ( False, False, False ) ->
+            "none"
+
+        ( True, False, False ) ->
+            "move"
+
+        ( False, True, False ) ->
+            "copy"
+
+        ( False, False, True ) ->
+            "link"
+
+        ( True, True, False ) ->
+            "copyMove"
+
+        ( True, False, True ) ->
+            "linkMove"
+
+        ( False, True, True ) ->
+            "copyLink"
+
+        ( True, True, True ) ->
+            "all"
+
+
 {-| Drag events listeners for the drop target element.
 
 PS: `dragenter` and `dragleave` are kind of inconsistent since they
@@ -258,7 +290,7 @@ You should prefer to let them be `Nothing`, or to add the CSS property
 onDropTarget : DropTargetConfig msg -> List (Html.Attribute msg)
 onDropTarget config =
     List.filterMap identity <|
-        [ Just (valueOn "dragover" (config.onOver config.dropEffect))
+        [ Just (valuePreventedOn "dragover" (config.onOver config.dropEffect))
         , Just (on "drop" config.onDrop)
         , Maybe.map (on "dragenter") config.onEnter
         , Maybe.map (on "dragleave") config.onLeave
@@ -293,12 +325,37 @@ type DropEffect
     | LinkOnDrop
 
 
+{-| Convert a `DropEffect` into its string equivalent.
+-}
+dropEffectToString : DropEffect -> String
+dropEffectToString dropEffect =
+    case dropEffect of
+        NoDropEffect ->
+            "none"
+
+        MoveOnDrop ->
+            "move"
+
+        CopyOnDrop ->
+            "copy"
+
+        LinkOnDrop ->
+            "link"
+
+
 
 -- EVENTS LISTENERS ##################################################
 
 
 valueOn : String -> (Value -> msg) -> Html.Attribute msg
 valueOn event tag =
+    Decode.value
+        |> Decode.map (\value -> { message = tag value, stopPropagation = True, preventDefault = False })
+        |> Html.Events.custom event
+
+
+valuePreventedOn : String -> (Value -> msg) -> Html.Attribute msg
+valuePreventedOn event tag =
     Decode.value
         |> Decode.map (\value -> { message = tag value, stopPropagation = True, preventDefault = True })
         |> Html.Events.custom event
