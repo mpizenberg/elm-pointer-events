@@ -13,13 +13,12 @@ module Events.Extra.Drag
         , fileDecoder
         , fileListDecoder
           -- , onDrag
-        , onDrop
+          -- , onDrop
           -- , onEnd
           -- , onEnter
-        , onLeave
-        , onOver
+          -- , onLeave
+          -- , onOver
           -- , onStart
-        , onWithOptions
         )
 
 {-| Handling drag events.
@@ -40,12 +39,8 @@ that cannot be done directly using the `Value`.
 
 # Drag Events
 
-@docs onOver, onDrop, onLeave
-
 
 # Advanced Usage
-
-@docs onWithOptions
 
 @docs eventDecoder, dataTransferDecoder, fileListDecoder, fileDecoder
 
@@ -53,9 +48,10 @@ that cannot be done directly using the `Value`.
 
 import Events.Extra.Mouse as Mouse
 import Html
+import Html.Attributes
 import Html.Events
 import Internal.Decode
-import Json.Decode as Decode exposing (Decoder)
+import Json.Decode as Decode exposing (Decoder, Value)
 
 
 {-| Type that get returned by a browser drag event.
@@ -141,73 +137,121 @@ type alias File =
 -- EVENTS ############################################################
 
 
-{-| Avoid, can be pretty expensive in resources.
+{-| Configuration of a file drop target.
 -}
-onDrag : (Event -> msg) -> Html.Attribute msg
-onDrag =
-    onWithOptions "drag" stopOptions
+type alias FileDropConfig msg =
+    { onOver : Event -> msg
+    , onDrop : Event -> msg
+    , onEnter : Maybe (Event -> msg)
+    , onLeave : Maybe (Event -> msg)
+    }
 
 
-{-| Avoid, bug of target pointing to itself.
+{-| Events listeners for a file drop target element.
+
+PS: incompatible with `onDropTarget` since both functions
+use the same events listeners.
+If you need to have a drop target working for both files and DOM elements,
+you can directly use `onDropTarget`.
+
 -}
-onEnter : (Event -> msg) -> Html.Attribute msg
-onEnter =
-    onWithOptions "dragenter" stopOptions
+onFileFromOS : FileDropConfig msg -> List (Html.Attribute msg)
+onFileFromOS config =
+    List.filterMap identity <|
+        [ Just (on "dragover" config.onOver)
+        , Just (on "drop" config.onDrop)
+        , Maybe.map (on "dragenter") config.onEnter
+        , Maybe.map (on "dragleave") config.onLeave
+        ]
 
 
-onStart : (Event -> msg) -> Html.Attribute msg
-onStart =
-    onWithOptions "dragstart" stopOptions
-
-
-{-| Listen to `dragover` events.
+{-| Configuration of a drop target.
+You should provide message taggers for `dragover` and `drop` events.
+You can also provide message taggers for `dragenter` and `dragleave` events.
 -}
-onOver : (Event -> msg) -> Html.Attribute msg
-onOver =
-    onWithOptions "dragover" stopOptions
+type alias DropTargetConfig msg =
+    { dropEffect : DropEffect
+    , onOver : DropEffect -> Value -> msg
+    , onDrop : Event -> msg
+    , onEnter : Maybe (Event -> msg)
+    , onLeave : Maybe (Event -> msg)
+    }
 
 
-{-| Listen to `drop` events.
+{-| Drop effect as configured by the drop target.
+This will change the visual aspect of the mouse icon.
+
+If the drop target sets (via port on `dragover`) a drop effect
+incompatible with the effects allowed for the dragged item,
+the drop will not happen.
+
 -}
-onDrop : (Event -> msg) -> Html.Attribute msg
-onDrop =
-    onWithOptions "drop" stopOptions
+type DropEffect
+    = NoDropEffect
+    | MoveOnDrop
+    | CopyOnDrop
+    | LinkOnDrop
 
 
-{-| Listen to `dragleave` events.
+{-| Drag events listeners for the drop target element.
 -}
-onLeave : (Event -> msg) -> Html.Attribute msg
-onLeave =
-    onWithOptions "dragleave" stopOptions
+onDropTarget : DropTargetConfig msg -> List (Html.Attribute msg)
+onDropTarget config =
+    List.filterMap identity <|
+        [ Just (valueOn "dragover" (config.onOver config.dropEffect))
+        , Just (on "drop" config.onDrop)
+        , Maybe.map (on "dragenter") config.onEnter
+        , Maybe.map (on "dragleave") config.onLeave
+        ]
 
 
-onEnd : (Event -> msg) -> Html.Attribute msg
-onEnd =
-    onWithOptions "dragend" stopOptions
-
-
-{-| Personalize your drag events with chosen html options.
+{-| Configuration of a draggable element.
+You should provide message taggers for `dragstart` and `dragend` events.
+You can (but it is more compute-intensive) provide a message tagger for `drag` events.
 -}
-onWithOptions : String -> EventOptions -> (Event -> msg) -> Html.Attribute msg
-onWithOptions event options tag =
-    eventDecoder
-        |> Decode.map (\ev -> { message = tag ev, stopPropagation = options.stopPropagation, preventDefault = options.preventDefault })
+type alias DraggedSourceConfig msg =
+    { effectAllowed : EffectAllowed
+    , onStart : EffectAllowed -> Value -> msg
+    , onEnd : Event -> msg
+    , onDrag : Maybe (Event -> msg)
+    }
+
+
+{-| Drop effects allowed for this draggable element.
+Set to `True` all effects allowed.
+This is used in the port of the `dragstart` event.
+-}
+type alias EffectAllowed =
+    { move : Bool
+    , copy : Bool
+    , link : Bool
+    }
+
+
+{-| Drag events listeners for the source dragged element.
+-}
+onSourceDrag : DraggedSourceConfig msg -> List (Html.Attribute msg)
+onSourceDrag config =
+    List.filterMap identity <|
+        [ Just (Html.Attributes.draggable "true")
+        , Just (valueOn "dragstart" (config.onStart config.effectAllowed))
+        , Just (on "dragend" config.onEnd)
+        , Maybe.map (on "drag") config.onDrag
+        ]
+
+
+valueOn : String -> (Value -> msg) -> Html.Attribute msg
+valueOn event tag =
+    Decode.value
+        |> Decode.map (\value -> { message = tag value, stopPropagation = True, preventDefault = True })
         |> Html.Events.custom event
 
 
-stopOptions : EventOptions
-stopOptions =
-    { stopPropagation = True
-    , preventDefault = True
-    }
-
-
-{-| Options for the event.
--}
-type alias EventOptions =
-    { stopPropagation : Bool
-    , preventDefault : Bool
-    }
+on : String -> (Event -> msg) -> Html.Attribute msg
+on event tag =
+    eventDecoder
+        |> Decode.map (\ev -> { message = tag ev, stopPropagation = True, preventDefault = True })
+        |> Html.Events.custom event
 
 
 
@@ -215,7 +259,7 @@ type alias EventOptions =
 
 
 {-| `Drag.Event` default decoder.
-It is provided in case you would like to extend it.
+It is provided in case you would like to reuse/extend it.
 -}
 eventDecoder : Decoder Event
 eventDecoder =
@@ -225,7 +269,7 @@ eventDecoder =
 
 
 {-| `DataTransfer` decoder.
-It is provided in case you would like to extend it.
+It is provided in case you would like to reuse/extend it.
 -}
 dataTransferDecoder : Decoder DataTransfer
 dataTransferDecoder =
@@ -235,7 +279,8 @@ dataTransferDecoder =
         (Decode.field "dropEffect" Decode.string)
 
 
-{-| Turn a personalized file decoder into a `List` decoder.
+{-| Transform a personalized `File` decoder into a `List File` decoder
+since `Json.Decode.list` does not work for the list of files.
 -}
 fileListDecoder : Decoder a -> Decoder (List a)
 fileListDecoder =
@@ -243,7 +288,7 @@ fileListDecoder =
 
 
 {-| `File` decoder.
-It is provided in case you would like to extend it.
+It is provided in case you would like to reuse/extend it.
 -}
 fileDecoder : Decoder File
 fileDecoder =
