@@ -7,7 +7,7 @@ module Events.Extra.Drag
     exposing
         ( DataTransfer
         , DraggedSourceConfig
-        , DropEffect
+        , DropEffect(..)
         , DropTargetConfig
         , EffectAllowed
         , Event
