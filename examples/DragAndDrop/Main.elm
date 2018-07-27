@@ -51,8 +51,11 @@ initialModel =
     { dragAndDropStatus = NoDnD
     , tasks =
         Dict.fromList
-            [ ( 1, Task ToDo "Prepare a cake" )
+            [ ( 1, Task ToDo "Bake a cake" )
             , ( 2, Task ToDo "Go for a run" )
+            , ( 3, Task ToDo "Pet the cat" )
+            , ( 4, Task ToDo "Watch that episode before I get spoiled!" )
+            , ( 5, Task ToDo "Sleep, yes really!" )
             ]
     }
 
