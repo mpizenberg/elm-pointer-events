@@ -22,6 +22,8 @@ module Events.Extra.Drag
         , onDropTarget
         , onFileFromOS
         , onSourceDrag
+        , overPortData
+        , startPortData
         )
 
 {-| [HTML5 drag events][dragevent] is a quite complicated specification.
@@ -71,12 +73,12 @@ to use HTML5 drag and drop API instead of your own custom solution.
 
 ## Managing the Dragged Item
 
-@docs onSourceDrag, DraggedSourceConfig, EffectAllowed, effectAllowedToString
+@docs onSourceDrag, DraggedSourceConfig, EffectAllowed, startPortData, effectAllowedToString
 
 
 ## Managing a Drop Target
 
-@docs onDropTarget, DropTargetConfig, DropEffect, dropEffectToString
+@docs onDropTarget, DropTargetConfig, DropEffect, overPortData, dropEffectToString
 
 
 # Decoders for Advanced Usage
@@ -249,6 +251,14 @@ type alias EffectAllowed =
     }
 
 
+{-| Put the effect allowed and the dragstart event
+in a data format that can be sent through port.
+-}
+startPortData : EffectAllowed -> Value -> { effectAllowed : String, event : Value }
+startPortData effectAllowed value =
+    { effectAllowed = effectAllowedToString effectAllowed, event = value }
+
+
 {-| Convert `EffectAllowed` into its String equivalent.
 -}
 effectAllowedToString : EffectAllowed -> String
@@ -323,6 +333,14 @@ type DropEffect
     | MoveOnDrop
     | CopyOnDrop
     | LinkOnDrop
+
+
+{-| Put the drop effect and the dragover event
+in a data format that can be sent through port.
+-}
+overPortData : DropEffect -> Value -> { dropEffect : String, event : Value }
+overPortData dropEffect value =
+    { dropEffect = dropEffectToString dropEffect, event = value }
 
 
 {-| Convert a `DropEffect` into its string equivalent.

@@ -13,6 +13,7 @@
 		.task {background: white; margin: 10px; padding: 10px;}
 	</style>
 	<script src="Main.js"></script>
+	<script src="DragPorts.js"></script>
 </head>
 <body>
 	<div id="elm"></div>
@@ -20,17 +21,8 @@
 		const app = Elm.Main.init({
 			node: document.getElementById("elm")
 		})
-		document.addEventListener( "dragover", event => {
-			event.dataTransfer.dropEffect = 'none'
-			event.preventDefault()
-		})
-		app.ports.dragstart.subscribe( data => {
-			data.event.dataTransfer.setData('text/plain', '') // needed
-			data.event.dataTransfer.effectAllowed = data.effectAllowed
-		})
-		app.ports.dragover.subscribe( data => {
-			data.event.dataTransfer.dropEffect = data.dropEffect
-		})
+		// setup the dragstart and dragover ports subscriptions.
+		DragPorts.setup( app )
 	</script>
 </body>
 </html>

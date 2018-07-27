@@ -75,13 +75,15 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.dragAndDropStatus ) of
         ( DragStart id effectAllowed value, _ ) ->
-            ( { model | dragAndDropStatus = Dragging id }, dragstartPort effectAllowed value )
+            ( { model | dragAndDropStatus = Dragging id }
+            , Ports.dragstart (Drag.startPortData effectAllowed value)
+            )
 
         ( DragEnd, _ ) ->
             ( { model | dragAndDropStatus = NoDnD }, Cmd.none )
 
         ( DragOver dropEffect value, _ ) ->
-            ( model, dragoverPort dropEffect value )
+            ( model, Ports.dragover (Drag.overPortData dropEffect value) )
 
         ( Drop status, Dragging id ) ->
             let
@@ -92,16 +94,6 @@ update msg model =
 
         _ ->
             ( model, Cmd.none )
-
-
-dragstartPort : Drag.EffectAllowed -> Value -> Cmd msg
-dragstartPort effectAllowed value =
-    Ports.dragstart { effectAllowed = Drag.effectAllowedToString effectAllowed, event = value }
-
-
-dragoverPort : Drag.DropEffect -> Value -> Cmd msg
-dragoverPort dropEffect value =
-    Ports.dragover { dropEffect = Drag.dropEffectToString dropEffect, event = value }
 
 
 maybeSetStatus : ProgressStatus -> Maybe Task -> Maybe Task
