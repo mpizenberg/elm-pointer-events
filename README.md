@@ -13,7 +13,7 @@ To be more specific, this means:
 
 * [`MouseEvent`][mouse-events]: standard mouse events
 * [`WheelEvent`][wheel-events]: standard wheel events
-* [`DragEvent`][drag-events]: partial support of drag events
+* [`DragEvent`][drag-events]: HTML5 drag events
 * [`TouchEvent`][touch-events]: standard touch events
 * [`PointerEvent`][pointer-events]: new pointer events
 
@@ -158,15 +158,22 @@ view =
 
 ### Drag
 
-Due to the limitation of not being able to call JavaScript functions directly in elm,
-full drag and drop API cannot be supported.
+The API presented by this package is slightly opinionated,
+to mitigate most errors induced by the complicated HTML5 drag events.
+This API is organized around two use cases:
 
-However, most of the time we just need to be able to drop some files
-from the file system to the web page.
-By providing the dragover, and drop events, this module enables such use case.
-Of course, the file retrieved in the form of a `Json.Decode.Value` would still
-have to be sent through ports if further processing is needed
-that cannot be done directly in elm using the `Value`.
+1. Dropping files from OS
+2. Drag and drop of DOM elements
+
+For dropping files, everything can be done purely in elm so the API reflects that.
+For drag and drop however some events require JavaScript function calls.
+Consequently it requires the use of ports.
+Two files, `DragPorts.js` and `Ports.elm` are provided in the source code
+of this repo to help setup things.
+
+More info is available in the module documentation.
+One example for each use case is present in the `examples/` directory.
+
 
 ## Examples
 
