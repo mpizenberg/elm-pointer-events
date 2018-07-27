@@ -56,7 +56,7 @@ of a mouse `Event`:
 
 
 ```elm
-import Mouse
+import Html.Events.Extra.Mouse as Mouse
 
 -- ...
 
@@ -77,7 +77,8 @@ Also, if you are designing some kind of drawing application,
 you want to be able to keep track of a pointer that leave the
 drawing area to know if the pointer went up.
 This is possible using what is called [pointer capture][pointer-capture].
-The example below demonstrates how to do this.
+But requires the use of ports. Look at `examples/Pointer/`
+if you are interested in how to do this.
 
 
 ```elm
@@ -88,9 +89,6 @@ div
 
     -- no touch-action
     , Html.Attributes.style [ ( "touch-action", "none" ) ]
-
-    -- pointer capture hack to continue "globally" the event anywhere on document
-    , attribute "onpointerdown" "event.target.setPointerCapture(event.pointerId);"
     ]
     [ -- the drawing area
     ]
@@ -107,7 +105,7 @@ In case you only want to handle single touch interactions,
 you could do something like below:
 
 ```elm
-import Touch
+import Html.Events.Extra.Touch as Touch
 
 -- ...
 
@@ -142,7 +140,7 @@ are also available in the attribute `mouseEvent`.
 To simply check for wheel rolling up or down you could do something like below:
 
 ```elm
-import Wheel
+import Html.Events.Extra.Wheel as Wheel
 
 -- ...
 
@@ -181,7 +179,7 @@ Minimalist working examples are available for each module in the `examples/` dir
 To test one example, `cd` into one of them and compile the elm file with the command:
 
 ```shell
-elm-make Main.elm --output Main.js
+elm make Main.elm --output Main.js
 ```
 
 Then use any static http server like:
