@@ -1,9 +1,9 @@
 module Main exposing (..)
 
 import Browser
-import Events.Extra.Touch as Touch
 import Html exposing (Html, div, p, text)
 import Html.Attributes exposing (style)
+import Html.Events.Extra.Touch as Touch
 
 
 main : Program () TouchEvent TouchEvent

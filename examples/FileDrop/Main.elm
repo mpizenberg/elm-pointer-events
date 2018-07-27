@@ -1,9 +1,9 @@
 module Main exposing (..)
 
 import Browser
-import Events.Extra.Drag as Drag
-import Events.Extra.Mouse as Mouse
 import Html exposing (Html, div, p, text)
+import Html.Events.Extra.Drag as Drag
+import Html.Events.Extra.Mouse as Mouse
 
 
 main : Program () DragEvent DragEvent

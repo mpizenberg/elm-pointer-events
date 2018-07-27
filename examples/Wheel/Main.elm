@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser
-import Events.Extra.Wheel as Wheel
 import Html exposing (Html, div, p, text)
+import Html.Events.Extra.Wheel as Wheel
 
 
 main : Program () WheelEvent WheelEvent

@@ -2,9 +2,9 @@ module Main exposing (..)
 
 import Browser
 import Dict exposing (Dict)
-import Events.Extra.Drag as Drag
 import Html exposing (Html, div, h1, p, text)
 import Html.Attributes exposing (class, id)
+import Html.Events.Extra.Drag as Drag
 import Json.Decode as Decode exposing (Value)
 import List
 import Ports

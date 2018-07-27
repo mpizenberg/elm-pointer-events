@@ -3,7 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Events.Extra.Wheel
+module Html.Events.Extra.Wheel
     exposing
         ( DeltaMode(..)
         , Event
@@ -28,9 +28,9 @@ module Events.Extra.Wheel
 
 -}
 
-import Events.Extra.Mouse as Mouse
 import Html
 import Html.Events
+import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode exposing (Decoder)
 
 

@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser
-import Events.Extra.Mouse as Mouse
 import Html exposing (..)
+import Html.Events.Extra.Mouse as Mouse
 
 
 main : Program () MouseEvent MouseEvent

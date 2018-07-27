@@ -3,7 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Events.Extra.Pointer
+module Html.Events.Extra.Pointer
     exposing
         ( ContactDetails
         , DeviceType(..)
@@ -36,9 +36,9 @@ module Events.Extra.Pointer
 
 -}
 
-import Events.Extra.Mouse as Mouse
 import Html
 import Html.Events
+import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode exposing (Decoder)
 
 

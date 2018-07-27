@@ -1,9 +1,9 @@
 port module Main exposing (..)
 
 import Browser
-import Events.Extra.Pointer as Pointer
 import Html exposing (..)
 import Html.Events
+import Html.Events.Extra.Pointer as Pointer
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Encode as Encode
 

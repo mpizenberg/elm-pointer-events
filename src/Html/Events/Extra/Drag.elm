@@ -3,7 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Events.Extra.Drag
+module Html.Events.Extra.Drag
     exposing
         ( DataTransfer
         , DraggedSourceConfig
@@ -87,10 +87,10 @@ to use HTML5 drag and drop API instead of your own custom solution.
 
 -}
 
-import Events.Extra.Mouse as Mouse
 import Html
 import Html.Attributes
 import Html.Events
+import Html.Events.Extra.Mouse as Mouse
 import Internal.Decode
 import Json.Decode as Decode exposing (Decoder, Value)
 
