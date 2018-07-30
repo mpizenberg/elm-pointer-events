@@ -88,7 +88,7 @@ div
     , Pointer.onUp ...
 
     -- no touch-action
-    , Html.Attributes.style [ ( "touch-action", "none" ) ]
+    , Html.Attributes.style "touch-action" "none"
     ]
     [ -- the drawing area
     ]
