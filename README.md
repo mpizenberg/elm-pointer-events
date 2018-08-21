@@ -8,6 +8,16 @@
 [badge-license]: https://img.shields.io/badge/license-MPL--2.0-blue.svg?style=flat-square
 [license]: https://www.mozilla.org/en-US/MPL/2.0/
 
+> If upgrading from [elm-mouse-events] or [elm-touch-events],
+> please read the [upgrade notes][upgrade].
+> Otherwise, if upgrading from elm-pointer-events 2.0.0,
+> reading the [CHANGELOG][changelog] should be enough.
+
+[elm-mouse-events]: https://github.com/mpizenberg/elm-mouse-events
+[elm-touch-events]: https://github.com/mpizenberg/elm-touch-events
+[upgrade]: https://github.com/mpizenberg/elm-pointer-events/blob/master/upgrade.md
+[changelog]: https://github.com/mpizenberg/elm-pointer-events/blob/master/CHANGELOG.md
+
 This package aims at handling all kinds of pointer events in elm.
 To be more specific, this means:
 
