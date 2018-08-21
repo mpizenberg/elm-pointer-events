@@ -2,12 +2,12 @@ module Main exposing (..)
 
 import Browser
 import Dict exposing (Dict)
+import DragPorts
 import Html exposing (Html, div, h1, p, text)
 import Html.Attributes exposing (class, id)
 import Html.Events.Extra.Drag as Drag
 import Json.Decode as Decode exposing (Value)
 import List
-import Ports
 
 
 main : Program () Model Msg
@@ -76,14 +76,14 @@ update msg model =
     case ( msg, model.dragAndDropStatus ) of
         ( DragStart id effectAllowed value, _ ) ->
             ( { model | dragAndDropStatus = Dragging id }
-            , Ports.dragstart (Drag.startPortData effectAllowed value)
+            , DragPorts.dragstart (Drag.startPortData effectAllowed value)
             )
 
         ( DragEnd, _ ) ->
             ( { model | dragAndDropStatus = NoDnD }, Cmd.none )
 
         ( DragOver dropEffect value, _ ) ->
-            ( model, Ports.dragover (Drag.overPortData dropEffect value) )
+            ( model, DragPorts.dragover (Drag.overPortData dropEffect value) )
 
         ( Drop status, Dragging id ) ->
             let

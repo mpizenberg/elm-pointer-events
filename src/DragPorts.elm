@@ -1,4 +1,4 @@
-port module Ports exposing (dragover, dragstart)
+port module DragPorts exposing (dragover, dragstart)
 
 import Json.Decode exposing (Value)
 
