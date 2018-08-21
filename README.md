@@ -18,6 +18,12 @@
 [upgrade]: https://github.com/mpizenberg/elm-pointer-events/blob/master/upgrade.md
 [changelog]: https://github.com/mpizenberg/elm-pointer-events/blob/master/CHANGELOG.md
 
+```elm
+import Html.Events.Extra.Pointer as Pointer
+-- ... example usage
+div [ Pointer.onDown (\event -> PointerDownMsg event.pointer.offsetPos) ] [ text "click here" ]
+```
+
 This package aims at handling all kinds of pointer events in elm.
 To be more specific, this means:
 
