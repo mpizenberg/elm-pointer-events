@@ -3,7 +3,7 @@
     "name": "mpizenberg/elm-pointer-events",
     "summary": "Mouse, Touch, Pointer, Wheel and Drag events",
     "license": "MPL-2.0",
-    "version": "4.0.0",
+    "version": "3.0.0",
     "exposed-modules": [
         "Html.Events.Extra.Pointer",
         "Html.Events.Extra.Mouse",
