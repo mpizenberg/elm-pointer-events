@@ -19,6 +19,8 @@ All notable changes to this project will be documented in this file.
 * This is now an elm 0.19 package so there are upgrade changes.
 * All modules are now under the namespace `Html.Events.Extra`.
   For example `Html.Events.Extra.Mouse`.
+* Tagged version commit is orphanned and stripped down
+  to only keep the necessary for elm packaging.
 
 ### Removed
 
