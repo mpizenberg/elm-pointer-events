@@ -2,7 +2,7 @@
 
 ## From elm 0.18 to 0.19
 
-### Comming from elm-mouse-events
+### Coming from elm-mouse-events
 
 Not many changes, you should get through without any major issue.
 Most importantly:
@@ -13,7 +13,7 @@ Most importantly:
 * The `Mouse.Event` type now also has `button`, `pagePos` and `screenPos` attributes.
   Depending on your usage, it might imply no or minor changes.
 
-### Comming from elm-touch-events
+### Coming from elm-touch-events
 
 Many changes. Most importantly:
 
