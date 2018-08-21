@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased - [diff-unreleased][(diff with 3.0.0)]
+## Unreleased - [(diff with 3.0.0)][diff-unreleased]
 
-## [3.0.0] - 2018-08-21 - [diff-3.0.0][(diff with 2.0.0)]
+## [3.0.0] - 2018-08-21 - [(diff with 2.0.0)][diff-3.0.0]
 
 ### Added
 
@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
 * `elm-pep/` is not anymore a git sub-module.
 * Previous drag example.
 
-## [2.0.0] - 2018-02-18 - [diff-2.0.0][(diff with 1.0.0)]
+## [2.0.0] - 2018-02-18 - [(diff with 1.0.0)][diff-2.0.0]
 
 ### Added
 
