@@ -123,7 +123,7 @@ In a curried style, this can also be written:
 -}
 onStart : (Event -> msg) -> Html.Attribute msg
 onStart =
-    onWithOptions "touchstart" stopOptions
+    onWithOptions "touchstart" defaultOptions
 
 
 {-| Triggered on a "touchmove" event.
@@ -136,7 +136,7 @@ Similarly than with `onStart`, we can write:
 -}
 onMove : (Event -> msg) -> Html.Attribute msg
 onMove =
-    onWithOptions "touchmove" stopOptions
+    onWithOptions "touchmove" defaultOptions
 
 
 {-| Triggered on a "touchend" event.
@@ -149,7 +149,7 @@ Similarly than with `onStart`, we can write:
 -}
 onEnd : (Event -> msg) -> Html.Attribute msg
 onEnd =
-    onWithOptions "touchend" stopOptions
+    onWithOptions "touchend" defaultOptions
 
 
 {-| Triggered on a "touchcancel" event.
@@ -162,11 +162,11 @@ Similarly than with `onStart`, we can write:
 -}
 onCancel : (Event -> msg) -> Html.Attribute msg
 onCancel =
-    onWithOptions "touchcancel" stopOptions
+    onWithOptions "touchcancel" defaultOptions
 
 
 {-| Personalize the html event options.
-If for some reason the default behavior of this package (stop propagation and prevent default)
+If for some reason the default behavior of this package (prevent default)
 does not fit your needs, you can change it like follows:
 
     onStart : (Touch.Event -> msg) -> Html.Attribute msg
@@ -182,9 +182,9 @@ onWithOptions event options tag =
         |> Html.Events.custom event
 
 
-stopOptions : EventOptions
-stopOptions =
-    { stopPropagation = True
+defaultOptions : EventOptions
+defaultOptions =
+    { stopPropagation = False
     , preventDefault = True
     }
 

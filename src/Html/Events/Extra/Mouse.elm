@@ -160,7 +160,7 @@ In a curried style, this can also be written:
 -}
 onDown : (Event -> msg) -> Attribute msg
 onDown =
-    onWithOptions "mousedown" stopOptions
+    onWithOptions "mousedown" defaultOptions
 
 
 {-| Listen to `mousemove` events.
@@ -173,7 +173,7 @@ Similarly than with `onDown`, we can write something like:
 -}
 onMove : (Event -> msg) -> Attribute msg
 onMove =
-    onWithOptions "mousemove" stopOptions
+    onWithOptions "mousemove" defaultOptions
 
 
 {-| Listen to `mouseup` events.
@@ -186,7 +186,7 @@ Similarly than with `onDown`, we can write something like:
 -}
 onUp : (Event -> msg) -> Attribute msg
 onUp =
-    onWithOptions "mouseup" stopOptions
+    onWithOptions "mouseup" defaultOptions
 
 
 
@@ -197,14 +197,14 @@ onUp =
 -}
 onClick : (Event -> msg) -> Attribute msg
 onClick =
-    onWithOptions "click" stopOptions
+    onWithOptions "click" defaultOptions
 
 
 {-| Listen to `dblclick` events.
 -}
 onDoubleClick : (Event -> msg) -> Attribute msg
 onDoubleClick =
-    onWithOptions "dblclick" stopOptions
+    onWithOptions "dblclick" defaultOptions
 
 
 {-| Listen to `mouseenter` events.
@@ -218,14 +218,14 @@ More details available on the [MDN documentation][mdn-mouseenter].
 -}
 onEnter : (Event -> msg) -> Attribute msg
 onEnter =
-    onWithOptions "mouseenter" stopOptions
+    onWithOptions "mouseenter" defaultOptions
 
 
 {-| Listen to `mouseover` events.
 -}
 onOver : (Event -> msg) -> Attribute msg
 onOver =
-    onWithOptions "mouseover" stopOptions
+    onWithOptions "mouseover" defaultOptions
 
 
 {-| Listen to `mouseleave` events.
@@ -239,14 +239,14 @@ More details available on the [MDN documentation][mdn-mouseleave].
 -}
 onLeave : (Event -> msg) -> Attribute msg
 onLeave =
-    onWithOptions "mouseleave" stopOptions
+    onWithOptions "mouseleave" defaultOptions
 
 
 {-| Listen to `mouseout` events.
 -}
 onOut : (Event -> msg) -> Attribute msg
 onOut =
-    onWithOptions "mouseout" stopOptions
+    onWithOptions "mouseout" defaultOptions
 
 
 {-| Listen to `contextmenu` events.
@@ -254,12 +254,12 @@ Fired on right mousedown, before the context menu is displayed.
 -}
 onContextMenu : (Event -> msg) -> Attribute msg
 onContextMenu =
-    onWithOptions "contextmenu" stopOptions
+    onWithOptions "contextmenu" defaultOptions
 
 
 {-| Choose the mouse event to listen to, and specify the event options.
 If for some reason the default behavior of this package
-(stop propagation and prevent default) does not fit your needs,
+(prevent default) does not fit your needs,
 you can change it with for example:
 
     onDown : (Mouse.Event -> msg) -> Html.Attribute msg
@@ -275,9 +275,9 @@ onWithOptions event options tag =
         |> Events.custom event
 
 
-stopOptions : EventOptions
-stopOptions =
-    { stopPropagation = True
+defaultOptions : EventOptions
+defaultOptions =
+    { stopPropagation = False
     , preventDefault = True
     }
 

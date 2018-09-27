@@ -141,7 +141,7 @@ to disable browsers scroll behaviors.
 -}
 onDown : (Event -> msg) -> Html.Attribute msg
 onDown =
-    onWithOptions "pointerdown" stopOptions
+    onWithOptions "pointerdown" defaultOptions
 
 
 {-| Listen to `pointermove` events.
@@ -153,7 +153,7 @@ Similarly than with [`onDown`](#onDown), we can write something like:
 -}
 onMove : (Event -> msg) -> Html.Attribute msg
 onMove =
-    onWithOptions "pointermove" stopOptions
+    onWithOptions "pointermove" defaultOptions
 
 
 {-| Listen to `pointerup` events.
@@ -165,7 +165,7 @@ Similarly than with [`onDown`](#onDown), we can write something like:
 -}
 onUp : (Event -> msg) -> Html.Attribute msg
 onUp =
-    onWithOptions "pointerup" stopOptions
+    onWithOptions "pointerup" defaultOptions
 
 
 {-| Listen to `pointercancel` events.
@@ -177,7 +177,7 @@ Similarly than with [`onDown`](#onDown), we can write something like:
 -}
 onCancel : (Event -> msg) -> Html.Attribute msg
 onCancel =
-    onWithOptions "pointercancel" stopOptions
+    onWithOptions "pointercancel" defaultOptions
 
 
 {-| Listen to `pointerover` events.
@@ -189,7 +189,7 @@ Similarly than with [`onDown`](#onDown), we can write something like:
 -}
 onOver : (Event -> msg) -> Html.Attribute msg
 onOver =
-    onWithOptions "pointerover" stopOptions
+    onWithOptions "pointerover" defaultOptions
 
 
 {-| Listen to `pointerenter` events.
@@ -201,7 +201,7 @@ Similarly than with [`onDown`](#onDown), we can write something like:
 -}
 onEnter : (Event -> msg) -> Html.Attribute msg
 onEnter =
-    onWithOptions "pointerenter" stopOptions
+    onWithOptions "pointerenter" defaultOptions
 
 
 {-| Listen to `pointerout` events.
@@ -213,7 +213,7 @@ Similarly than with [`onDown`](#onDown), we can write something like:
 -}
 onOut : (Event -> msg) -> Html.Attribute msg
 onOut =
-    onWithOptions "pointerout" stopOptions
+    onWithOptions "pointerout" defaultOptions
 
 
 {-| Listen to `pointerleave` events.
@@ -225,13 +225,13 @@ Similarly than with [`onDown`](#onDown), we can write something like:
 -}
 onLeave : (Event -> msg) -> Html.Attribute msg
 onLeave =
-    onWithOptions "pointerleave" stopOptions
+    onWithOptions "pointerleave" defaultOptions
 
 
 {-| Choose the pointer event to listen to, and specify the event options.
 
 If for some reason the default behavior of this lib
-(stop propagation and prevent default) does not fit your needs,
+(prevent default) does not fit your needs,
 you can change it with for example:
 
     myOnDown : (Pointer.Event -> msg) -> Html.Attribute msg
@@ -247,9 +247,9 @@ onWithOptions event options tag =
         |> Html.Events.custom event
 
 
-stopOptions : EventOptions
-stopOptions =
-    { stopPropagation = True
+defaultOptions : EventOptions
+defaultOptions =
+    { stopPropagation = False
     , preventDefault = True
     }
 
@@ -296,10 +296,10 @@ And use it like as follows:
     myOnDown : (MyPointerEvent -> msg) -> Html.Attribute msg
     myOnDown tag =
         Decode.map tag myEventDecoder
-            |> Html.Events.onWithOptions "pointerdown" stopOptions
+            |> Html.Events.onWithOptions "pointerdown" defaultOptions
 
-    stopOptions : Html.Events.Options
-    stopOptions =
+    defaultOptions : Html.Events.Options
+    defaultOptions =
         { stopPropagation = True
         , preventDefault = True
         }

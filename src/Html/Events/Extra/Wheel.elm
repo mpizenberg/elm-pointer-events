@@ -82,10 +82,10 @@ And we want to zoom in or out on an element depending on a wheel event:
 -}
 onWheel : (Event -> msg) -> Html.Attribute msg
 onWheel =
-    onWithOptions stopOptions
+    onWithOptions defaultOptions
 
 
-{-| Enable personalization of html events options (prevent default and stop propagation)
+{-| Enable personalization of html events options (prevent default)
 in case the default options do not fit your needs.
 You can change options like follows:
 
@@ -102,9 +102,9 @@ onWithOptions options tag =
         |> Html.Events.custom "wheel"
 
 
-stopOptions : EventOptions
-stopOptions =
-    { stopPropagation = True
+defaultOptions : EventOptions
+defaultOptions =
+    { stopPropagation = False
     , preventDefault = True
     }
 
