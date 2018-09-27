@@ -6,7 +6,7 @@
 module Html.Events.Extra.Wheel exposing
     ( Event, DeltaMode(..)
     , onWheel
-    , onWithOptions, eventDecoder
+    , EventOptions, onWithOptions, eventDecoder
     )
 
 {-| Handling wheel events.
@@ -21,7 +21,7 @@ module Html.Events.Extra.Wheel exposing
 
 # Advanced Usage
 
-@docs onWithOptions, eventDecoder
+@docs EventOptions, onWithOptions, eventDecoder
 
 -}
 

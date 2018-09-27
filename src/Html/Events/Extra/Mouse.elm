@@ -9,7 +9,7 @@ module Html.Events.Extra.Mouse exposing
     , onClick, onDoubleClick
     , onEnter, onOver, onLeave, onOut
     , onContextMenu
-    , onWithOptions
+    , EventOptions, onWithOptions
     , eventDecoder
     )
 
@@ -40,7 +40,7 @@ You can use them exactly like the previous examples.
 
 # Advanced Usage
 
-@docs onWithOptions
+@docs EventOptions, onWithOptions
 
 @docs eventDecoder
 

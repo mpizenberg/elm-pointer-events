@@ -6,7 +6,7 @@
 module Html.Events.Extra.Pointer exposing
     ( Event, DeviceType(..), ContactDetails
     , onDown, onMove, onUp, onCancel, onOver, onEnter, onOut, onLeave
-    , onWithOptions, eventDecoder
+    , EventOptions, onWithOptions, eventDecoder
     )
 
 {-| Handling pointer events.
@@ -21,7 +21,7 @@ module Html.Events.Extra.Pointer exposing
 
 # Advanced Usage
 
-@docs onWithOptions, eventDecoder
+@docs EventOptions, onWithOptions, eventDecoder
 
 -}
 
