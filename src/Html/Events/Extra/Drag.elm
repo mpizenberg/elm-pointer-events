@@ -3,28 +3,13 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Html.Events.Extra.Drag
-    exposing
-        ( DataTransfer
-        , DraggedSourceConfig
-        , DropEffect(..)
-        , DropTargetConfig
-        , EffectAllowed
-        , Event
-        , File
-        , FileDropConfig
-        , dataTransferDecoder
-        , dropEffectToString
-        , effectAllowedToString
-        , eventDecoder
-        , fileDecoder
-        , fileListDecoder
-        , onDropTarget
-        , onFileFromOS
-        , onSourceDrag
-        , overPortData
-        , startPortData
-        )
+module Html.Events.Extra.Drag exposing
+    ( Event, DataTransfer, File
+    , onFileFromOS, FileDropConfig
+    , onSourceDrag, DraggedSourceConfig, EffectAllowed, startPortData, effectAllowedToString
+    , onDropTarget, DropTargetConfig, DropEffect(..), overPortData, dropEffectToString
+    , eventDecoder, dataTransferDecoder, fileListDecoder, fileDecoder
+    )
 
 {-| [HTML5 drag events][dragevent] is a quite complicated specification.
 Mostly because it is very stateful, and many properties and functions

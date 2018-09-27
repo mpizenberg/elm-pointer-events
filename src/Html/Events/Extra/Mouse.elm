@@ -3,24 +3,15 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Html.Events.Extra.Mouse
-    exposing
-        ( Button(..)
-        , Event
-        , Keys
-        , eventDecoder
-        , onClick
-        , onContextMenu
-        , onDoubleClick
-        , onDown
-        , onEnter
-        , onLeave
-        , onMove
-        , onOut
-        , onOver
-        , onUp
-        , onWithOptions
-        )
+module Html.Events.Extra.Mouse exposing
+    ( Event, Keys, Button(..)
+    , onDown, onMove, onUp
+    , onClick, onDoubleClick
+    , onEnter, onOver, onLeave, onOut
+    , onContextMenu
+    , onWithOptions
+    , eventDecoder
+    )
 
 {-| Handling detailed mouse events.
 

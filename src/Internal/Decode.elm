@@ -3,7 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Internal.Decode exposing (..)
+module Internal.Decode exposing (Keys, all, clientPos, dynamicListOf, keys, offsetPos, pagePos, screenPos)
 
 import Json.Decode as Decode exposing (Decoder)
 

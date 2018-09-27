@@ -3,22 +3,11 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Html.Events.Extra.Pointer
-    exposing
-        ( ContactDetails
-        , DeviceType(..)
-        , Event
-        , eventDecoder
-        , onCancel
-        , onDown
-        , onEnter
-        , onLeave
-        , onMove
-        , onOut
-        , onOver
-        , onUp
-        , onWithOptions
-        )
+module Html.Events.Extra.Pointer exposing
+    ( Event, DeviceType(..), ContactDetails
+    , onDown, onMove, onUp, onCancel, onOver, onEnter, onOut, onLeave
+    , onWithOptions, eventDecoder
+    )
 
 {-| Handling pointer events.
 

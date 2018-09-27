@@ -3,14 +3,11 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Html.Events.Extra.Wheel
-    exposing
-        ( DeltaMode(..)
-        , Event
-        , eventDecoder
-        , onWheel
-        , onWithOptions
-        )
+module Html.Events.Extra.Wheel exposing
+    ( Event, DeltaMode(..)
+    , onWheel
+    , onWithOptions, eventDecoder
+    )
 
 {-| Handling wheel events.
 

@@ -3,20 +3,11 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 
-module Html.Events.Extra.Touch
-    exposing
-        ( Event
-        , Keys
-        , Touch
-        , eventDecoder
-        , onCancel
-        , onEnd
-        , onMove
-        , onStart
-        , onWithOptions
-        , touchDecoder
-        , touchListDecoder
-        )
+module Html.Events.Extra.Touch exposing
+    ( Event, Keys, Touch
+    , onStart, onMove, onEnd, onCancel
+    , onWithOptions, eventDecoder, touchDecoder, touchListDecoder
+    )
 
 {-| Handling touch events.
 
