@@ -1,6 +1,7 @@
-module Main exposing (..)
+module Main exposing (DragEvent(..), MetaData, WithoutRawData, extractMetadata, fileDropConfig, main, view, withoutRawData)
 
 import Browser
+import File exposing (File)
 import Html exposing (Html, div, p, text)
 import Html.Events.Extra.Drag as Drag
 import Html.Events.Extra.Mouse as Mouse
@@ -63,9 +64,9 @@ withoutRawData event =
     }
 
 
-extractMetadata : Drag.File -> MetaData
+extractMetadata : File -> MetaData
 extractMetadata file =
-    { name = file.name
-    , mimeType = file.mimeType
-    , size = file.size
+    { name = File.name file
+    , mimeType = File.mime file
+    , size = File.size file
     }

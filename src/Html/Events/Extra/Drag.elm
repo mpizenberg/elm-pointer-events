@@ -72,6 +72,7 @@ to use HTML5 drag and drop API instead of your own custom solution.
 
 -}
 
+import File exposing (File)
 import Html
 import Html.Attributes
 import Html.Events
@@ -132,31 +133,15 @@ type alias DataTransfer =
     }
 
 
-{-| A file object is a specific kind of blob.
-Its raw JavaScript value is hold in the `data` attribute
-in the form of a `Json.Decode.Value`.
-This corresponds to a JavaScript [`File`][jsFile]
+{-| This type alias used to represent file blobs in this application.
 
-  - `name`: name of the file, without the path for security reasons
-  - `mimeType`: [MIME] type of the file
-  - `size`: size of the file in bytes
+Now, however, Elm has an official File type in (elm/File)[https://package.elm-lang.org/packages/elm/file/latest/File]!
 
-_Remark: providing these properties as attributes in an elm record
-is the easiest way of bringing this `File` API to elm.
-Of course if at some point the `File` API is supported in elm,
-this would be changed to the supported version._
-
-[jsFile]: https://developer.mozilla.org/en-US/docs/Web/API/File
-[MIME]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+This alias has been rewritten to reference that type. Go see the elm/File docs for usage instructions!
 
 -}
 type alias File =
-    -- no support of lastModified in Safari
-    { name : String
-    , mimeType : String
-    , size : Int
-    , data : Decode.Value
-    }
+    File.File
 
 
 
@@ -405,12 +390,11 @@ fileListDecoder =
 
 
 {-| `File` decoder.
-It is provided in case you would like to reuse/extend it.
+
+With the File alias now referring to elm/File's official file type,
+this function is now just a compatibility reference to File.decoder.
+
 -}
 fileDecoder : Decoder File
 fileDecoder =
-    Decode.map4 File
-        (Decode.field "name" Decode.string)
-        (Decode.field "type" Decode.string)
-        (Decode.field "size" Decode.int)
-        Decode.value
+    File.decoder
