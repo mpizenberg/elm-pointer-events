@@ -4,11 +4,11 @@
 
 
 module Html.Events.Extra.Drag exposing
-    ( Event, DataTransfer, File
+    ( Event, DataTransfer
     , onFileFromOS, FileDropConfig
     , onSourceDrag, DraggedSourceConfig, EffectAllowed, startPortData, effectAllowedToString
     , onDropTarget, DropTargetConfig, DropEffect(..), overPortData, dropEffectToString
-    , eventDecoder, dataTransferDecoder, fileListDecoder, fileDecoder
+    , eventDecoder, dataTransferDecoder, fileListDecoder
     )
 
 {-| [HTML5 drag events][dragevent] is a quite complicated specification.
@@ -40,7 +40,7 @@ The rest of the documentation presents the API with those use cases in mind.
 
 # The Event Type
 
-@docs Event, DataTransfer, File
+@docs Event, DataTransfer
 
 
 # File Dropping
@@ -68,7 +68,7 @@ to use HTML5 drag and drop API instead of your own custom solution.
 
 # Decoders for Advanced Usage
 
-@docs eventDecoder, dataTransferDecoder, fileListDecoder, fileDecoder
+@docs eventDecoder, dataTransferDecoder, fileListDecoder
 
 -}
 
@@ -102,6 +102,7 @@ type alias Event =
 This corresponds to JavaScript [DataTransfer].
 
 The `files` attribute holds the list of files being dragged.
+Each file is of the type `File` provided by [elm/file].
 
 The `types` attribute contains a list of strings providing
 the different formats of objects being dragged.
@@ -124,6 +125,7 @@ no use in the context of elm.
 The `items` property is not provided by lack of compatibility.
 
 [DataTransfer]: https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer
+[elm/file]: https://package.elm-lang.org/packages/elm/file/latest/File
 
 -}
 type alias DataTransfer =
@@ -131,17 +133,6 @@ type alias DataTransfer =
     , types : List String
     , dropEffect : String
     }
-
-
-{-| This type alias used to represent file blobs in this application.
-
-Now, however, Elm has an official File type in (elm/File)[https://package.elm-lang.org/packages/elm/file/latest/File]!
-
-This alias has been rewritten to reference that type. Go see the elm/File docs for usage instructions!
-
--}
-type alias File =
-    File.File
 
 
 
@@ -376,7 +367,7 @@ It is provided in case you would like to reuse/extend it.
 dataTransferDecoder : Decoder DataTransfer
 dataTransferDecoder =
     Decode.map3 DataTransfer
-        (Decode.field "files" <| fileListDecoder fileDecoder)
+        (Decode.field "files" <| fileListDecoder File.decoder)
         (Decode.field "types" <| Decode.list Decode.string)
         (Decode.field "dropEffect" Decode.string)
 
@@ -387,14 +378,3 @@ since `Json.Decode.list` does not work for the list of files.
 fileListDecoder : Decoder a -> Decoder (List a)
 fileListDecoder =
     Internal.Decode.dynamicListOf
-
-
-{-| `File` decoder.
-
-With the File alias now referring to elm/File's official file type,
-this function is now just a compatibility reference to File.decoder.
-
--}
-fileDecoder : Decoder File
-fileDecoder =
-    File.decoder
