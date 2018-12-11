@@ -1,4 +1,4 @@
-port module Main exposing (..)
+port module Main exposing (main)
 
 import Browser
 import Html exposing (..)
@@ -26,6 +26,7 @@ type Event
     = Down Pointer.Event
     | Move Pointer.Event
     | Up Pointer.Event
+    | Cancel Pointer.Event
 
 
 type Msg
@@ -58,6 +59,7 @@ view model =
         [ p
             [ Pointer.onUp (EventMsg << Up)
             , Pointer.onMove (EventMsg << Move)
+            , Pointer.onCancel (EventMsg << Cancel)
             , msgOn "pointerdown" (Decode.map RawDownMsg Decode.value)
             ]
             [ text <| Debug.toString model ]
