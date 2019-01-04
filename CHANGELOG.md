@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased - [(diff with 3.1.0)][diff-unreleased]
+## Unreleased - [(diff with 4.0.0)][diff-unreleased]
 
 ## [4.0.0] - 2019-01-04 - [(diff with 3.1.0)][diff-4.0.0]
 
@@ -79,11 +79,13 @@ All notable changes to this project will be documented in this file.
 - `README` describing this package.
 - `LICENSE` under MPL-2.0.
 
+[4.0.0]: https://github.com/mpizenberg/elm-pointer-events/releases/tag/4.0.0
 [3.1.0]: https://github.com/mpizenberg/elm-pointer-events/releases/tag/3.1.0
 [3.0.0]: https://github.com/mpizenberg/elm-pointer-events/releases/tag/3.0.0
 [2.0.0]: https://github.com/mpizenberg/elm-pointer-events/releases/tag/2.0.0
 [1.0.0]: https://github.com/mpizenberg/elm-pointer-events/releases/tag/1.0.0
-[diff-unreleased]: https://github.com/mpizenberg/elm-pointer-events/compare/3.0.0...HEAD
+[diff-unreleased]: https://github.com/mpizenberg/elm-pointer-events/compare/4.0.0...HEAD
+[diff-4.0.0]: https://github.com/mpizenberg/elm-pointer-events/compare/3.1.0...4.0.0
 [diff-3.1.0]: https://github.com/mpizenberg/elm-pointer-events/compare/3.0.0...3.1.0
 [diff-3.0.0]: https://github.com/mpizenberg/elm-pointer-events/compare/2.0.0...3.0.0
 [diff-2.0.0]: https://github.com/mpizenberg/elm-pointer-events/compare/1.0.0...2.0.0
