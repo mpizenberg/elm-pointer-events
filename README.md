@@ -27,11 +27,11 @@ div [ Pointer.onDown (\event -> PointerDownMsg event.pointer.offsetPos) ] [ text
 This package aims at handling all kinds of pointer events in elm.
 To be more specific, this means:
 
-* [`MouseEvent`][mouse-events]: standard mouse events
-* [`WheelEvent`][wheel-events]: standard wheel events
-* [`DragEvent`][drag-events]: HTML5 drag events
-* [`TouchEvent`][touch-events]: standard touch events
-* [`PointerEvent`][pointer-events]: new pointer events
+- [`MouseEvent`][mouse-events]: standard mouse events
+- [`WheelEvent`][wheel-events]: standard wheel events
+- [`DragEvent`][drag-events]: HTML5 drag events
+- [`TouchEvent`][touch-events]: standard touch events
+- [`PointerEvent`][pointer-events]: new pointer events
 
 If you are looking for only one standard kind of interaction (mouse or touch),
 I recommend that you use the `Mouse` or `Touch` modules.
@@ -56,7 +56,6 @@ for compatibility with major browsers.
 [pointer-events]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 [elm-pep]: https://github.com/mpizenberg/elm-pep
 
-
 ## Usage
 
 ### Mouse and Pointer
@@ -65,11 +64,10 @@ The `Mouse` and `Pointer` modules have very similar API
 so I will use `Mouse` as an example.
 Let's say you want the coordinates of a mouse down event relative to the DOM
 element that triggered it.
-In JavaScript, these are provided by the [`offsetX` and `offsetY` properties][offsetX]
+In JavaScript, these are provided by the [`offsetX` and `offsetY` properties][offsetx]
 of the mouse event.
 Using this module, these are similarly provided by the `offsetPos` attribute
 of a mouse `Event`:
-
 
 ```elm
 import Html.Events.Extra.Mouse as Mouse
@@ -96,7 +94,6 @@ This is possible using what is called [pointer capture][pointer-capture].
 But requires the use of ports. Look at `examples/Pointer/`
 if you are interested in how to do this.
 
-
 ```elm
 div
     [ Pointer.onDown ...
@@ -110,9 +107,8 @@ div
     ]
 ```
 
-[offsetX]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/offsetX
+[offsetx]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/offsetX
 [pointer-capture]: https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture
-
 
 ### Touch
 
@@ -143,9 +139,7 @@ touchCoordinates touchEvent =
     List.head touchEvent.changedTouches
         |> Maybe.map .clientPos
         |> Maybe.withDefault ( 0, 0 )
-
 ```
-
 
 ### Wheel
 
@@ -169,7 +163,6 @@ view =
         [text "scroll here"]
 ```
 
-
 ### Drag
 
 The API presented by this package is slightly opinionated,
@@ -187,7 +180,6 @@ of this repo to help setup things.
 
 More info is available in the module documentation.
 One example for each use case is present in the `examples/` directory.
-
 
 ## Examples
 
@@ -207,7 +199,6 @@ $ python3 -m http.server 8888
 And open your browser at localhost:8888
 to load the `index.html` page.
 
-
 ## Want to contribute?
 
 If you are interested in contributing in any way
@@ -216,13 +207,11 @@ don't hesitate to reach out on slack (user @mattpiz)
 and/or open an issue.
 Discussion is the best way to start any contribution.
 
-
 ## Documentation
 
 [![][badge-doc]][doc]
 
 The package documentation is available on the [elm package website][doc].
-
 
 ## License
 
@@ -232,9 +221,8 @@ This Source Code Form is subject to the terms of the Mozilla Public License,v. 2
 If a copy of the MPL was not distributed with this file,
 You can obtain one at https://mozilla.org/MPL/2.0/.
 
-
 ## Contributors
 
-* Matthieu Pizenberg - @mpizenberg
-* Thomas Forgione - @tforgione ([elm-pep] polyfill)
-* Robert Vollmert - @robx ([elm-pep] polyfill)
+- Matthieu Pizenberg - @mpizenberg
+- Thomas Forgione - @tforgione ([elm-pep] polyfill)
+- Robert Vollmert - @robx ([elm-pep] polyfill)
