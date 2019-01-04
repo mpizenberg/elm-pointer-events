@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased - [(diff with 3.1.0)][diff-unreleased]
 
+## [4.0.0] - 2019-01-04 - [(diff with 3.1.0)][diff-4.0.0]
+
+### Added
+
+- Dependency to `File` type in elm/file.
+
+### Changed
+
+- Keep the examples in the tagged commit for people coming from
+  the package website.
+
+### Removed
+
+- Previous `File` type alias.
+- File decoder (just use the one from elm/file now).
+
 ## [3.1.0] - 2018-09-27 - [(diff with 3.0.0)][diff-3.1.0]
 
 ### Added
