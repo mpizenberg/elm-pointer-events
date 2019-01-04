@@ -226,4 +226,4 @@ You can obtain one at https://mozilla.org/MPL/2.0/.
 - Matthieu Pizenberg - @mpizenberg
 - Thomas Forgione - @tforgione ([elm-pep] polyfill)
 - Robert Vollmert - @robx ([elm-pep] polyfill)
-- Matthew Dupree - @4onen (ugrade File type to official one in elm/file)
+- Matthew Dupree - @4onen (upgrade File type to official one in elm/file)
