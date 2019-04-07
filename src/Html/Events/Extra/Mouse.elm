@@ -336,7 +336,7 @@ And use it like follows:
                 , preventDefault = True
                 }
             decoder =
-                decodeWeelWithMovement
+                decodeWithMovement
                     |> Decode.map tag
                     |> Decode.map options
         in
