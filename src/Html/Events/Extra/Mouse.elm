@@ -330,11 +330,17 @@ And use it like follows:
     onMove : (EventWithMovement -> msg) -> Html.Attribute msg
     onMove tag =
         let
-            options =
-                { stopPropagation = True, preventDefault = True }
+            options message =
+                { message = message
+                , stopPropagation = True
+                , preventDefault = True
+                }
+            decoder =
+                decodeWeelWithMovement
+                    |> Decode.map tag
+                    |> Decode.map options
         in
-        Decode.map tag decodeWithMovement
-            |> Html.Events.onWithOptions "mousemove" options
+        Html.Events.custom "mousemove" decoder
 
 -}
 eventDecoder : Decoder Event
