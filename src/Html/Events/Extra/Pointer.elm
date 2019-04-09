@@ -295,14 +295,19 @@ And use it like as follows:
 
     myOnDown : (MyPointerEvent -> msg) -> Html.Attribute msg
     myOnDown tag =
-        Decode.map tag myEventDecoder
-            |> Html.Events.onWithOptions "pointerdown" defaultOptions
+        let
+            decoder =
+                myEventDecoder
+                    |> Decode.map tag
+                    |> Decode.map options
 
-    defaultOptions : Html.Events.Options
-    defaultOptions =
-        { stopPropagation = True
-        , preventDefault = True
-        }
+            options message =
+                { message = message
+                , stopPropagation = False
+                , preventDefault = True
+                }
+        in
+        Html.Events.custom "pointerdown" decoder
 
 BEWARE that the minimalist [elm-pep] polyfill may not support
 all properties. So if you rely on it for compatibility with browsers
