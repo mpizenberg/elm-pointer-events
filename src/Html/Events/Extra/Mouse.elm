@@ -337,7 +337,7 @@ And use it like follows:
 
             options message =
                 { message = message
-                , stopPropagation = True
+                , stopPropagation = False
                 , preventDefault = True
                 }
         in
