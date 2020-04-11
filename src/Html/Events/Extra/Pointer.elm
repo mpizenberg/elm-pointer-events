@@ -54,7 +54,7 @@ And to know if the shift key was pressed:
 
 [PointerEvent]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 [MouseEvent]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
-[Mouse-Event]: http://package.elm-lang.org/packages/mpizenberg/elm-mouse-events/latest/Mouse#Event
+[Mouse-Event]: Html-Events-Extra-Mouse#Event
 
 -}
 type alias Event =
