@@ -19,6 +19,7 @@ import Json.Decode as Decode exposing (Decoder)
 type alias Keys =
     { alt : Bool
     , ctrl : Bool
+    , meta : Bool
     , shift : Bool
     }
 
@@ -45,9 +46,10 @@ all =
 
 keys : Decoder Keys
 keys =
-    Decode.map3 Keys
+    Decode.map4 Keys
         (Decode.field "altKey" Decode.bool)
         (Decode.field "ctrlKey" Decode.bool)
+        (Decode.field "metaKey" Decode.bool)
         (Decode.field "shiftKey" Decode.bool)
 
 

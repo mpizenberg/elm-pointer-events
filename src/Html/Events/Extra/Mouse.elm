@@ -107,12 +107,9 @@ Checking if the ctrl key was hold when the event triggered is as easy as:
     isCtrlKeyPressed mouseEvent =
         mouseEvent.keys.ctrl
 
-Since the `metaKey` property is not detected on linux,
-it is not provided by this package.
-
 -}
 type alias Keys =
-    { alt : Bool, ctrl : Bool, shift : Bool }
+    { alt : Bool, ctrl : Bool, meta : Bool, shift : Bool }
 
 
 {-| The button pressed for the event.

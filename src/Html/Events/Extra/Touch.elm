@@ -70,6 +70,7 @@ Beware that it may not be working on some platforms, returning always false.
 type alias Keys =
     { alt : Bool
     , ctrl : Bool
+    , meta : Bool
     , shift : Bool
     }
 
