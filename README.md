@@ -228,3 +228,4 @@ You can obtain one at https://mozilla.org/MPL/2.0/.
 - Robert Vollmert - @robx ([elm-pep] polyfill)
 - Matthew Dupree - @4onen (upgrade File type to official one in elm/file)
 - Brendan Weibrecht - @ZimbiX (documentation)
+- Simon Lydell - @lydell (add support for metaKey)
