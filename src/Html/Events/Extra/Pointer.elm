@@ -52,9 +52,9 @@ And to know if the shift key was pressed:
     isShiftKeyPressed event =
         event.pointer.key.shift
 
-Note about `movementX/Y`: although official docs say that support for
+Note about `movementX/Y`: official docs say that support for
 [PointerEvent][PointerEventSupport] and [MouseEvent][MouseEventSupport]
-is implemented by all modern (and not) browsers but in fact `movementX/Y` properties
+is implemented by all modern (and not) browsers, but in fact `movementX/Y` properties
 are not present on any of mobile browsers (as of writing).
 
 [PointerEvent]: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
