@@ -77,7 +77,7 @@ Therefore they are available here with attribute `offsetPos`.
 
 The `movementX/Y` properties are not provided by this package,
 since they are not supported by any mobile browser
-(despite the fact that official docs sys the opposite as of writing at Jun, 2023) –
+(despite the fact that official docs say the opposite as of writing at Jun, 2023) –
 and [Html.Events.Pointer][Pointer-Event] uses the same decoder.
 The `x` and `y` properties being equivalent to `clientX/Y`,
 are not provided either.
