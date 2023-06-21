@@ -75,8 +75,10 @@ Therefore they are available here with attribute `offsetPos`.
     relativePos mouseEvent =
         mouseEvent.offsetPos
 
-The `movementX/Y` properties not being compatible with Safari / iOS,
-they are not provided by this package.
+The `movementX/Y` properties are not provided by this package,
+since they are not supported by any mobile browser
+(despite the fact that official docs say the opposite as of writing at Jun, 2023) –
+and [Html.Events.Pointer][Pointer-Event] uses the same decoder.
 The `x` and `y` properties being equivalent to `clientX/Y`,
 are not provided either.
 The `screenPos` attribute provides `screenX/Y` properties in case needed,
@@ -87,6 +89,7 @@ article [A tale of two viewports][tale-viewports].
 
 [js-mouse-event]: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
 [tale-viewports]: https://www.quirksmode.org/mobile/viewports.html
+[Pointer-Event]: Html-Events-Extra-Pointer#Event
 
 -}
 type alias Event =
